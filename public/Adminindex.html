@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administrador - Mawi</title>
+    <meta name="description" content="Panel de control para administradores">
+      <!-- CSS Imports -->
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/admin.css">
+    
+    <style>
+        /* Loading específico para esta página */
+        .auth-loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--bg-dark);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .progress-bar {
+            width: 300px;
+            height: 6px;
+            background-color: var(--bg-input);
+            border-radius: 3px;
+            margin: 20px auto;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--primary-hover));
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="auth-loading">
+        <div class="admin-loading">
+            <div class="admin-loading-spinner"></div>
+            <h2 class="admin-loading-text">🔐 Verificando permisos de administrador</h2>
+            <p class="admin-loading-subtext" id="loading-message">Iniciando verificación...</p>
+            <div class="progress-bar">
+                <div id="progress-fill" class="progress-fill"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Error Screen -->
+    <div id="error-screen" class="admin-container" style="display: none;">
+        <div class="admin-content">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h1>❌ Error de Autenticación</h1>
+                    <p id="error-message" class="text-danger mb-4"></p>
+                    <button onclick="redirectToLogin()" class="btn btn-primary">
+                        Ir al Login
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="main-content" class="admin-container" style="display: none;">
+        <!-- Header -->
+        <header class="admin-header">
+            <div class="admin-title">
+                <h1>🛡️ Panel de Administrador</h1>
+            </div>
+            <div class="admin-user-info">
+                <span id="admin-name">Administrador</span>
+                <span class="admin-role-badge">Admin</span>
+                <a href="login.html" onclick="logout()" class="btn btn-sm btn-secondary">
+                    Cerrar Sesión
+                </a>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <main class="admin-content">
+            <!-- Welcome Section -->
+            <div class="text-center mb-5">
+                <h2>Bienvenido al Panel de Administración</h2>
+                <p class="text-secondary">Selecciona una opción para continuar</p>
+            </div>
+
+            <!-- Stats Overview -->
+            <div class="admin-stats">
+                <div class="admin-stat-card">
+                    <span class="admin-stat-number" id="total-users">-</span>
+                    <span class="admin-stat-label">Usuarios Totales</span>
+                </div>
+                <div class="admin-stat-card">
+                    <span class="admin-stat-number" id="pending-users">-</span>
+                    <span class="admin-stat-label">Usuarios Pendientes</span>
+                </div>
+                <div class="admin-stat-card">
+                    <span class="admin-stat-number" id="total-records">-</span>
+                    <span class="admin-stat-label">Registros Totales</span>
+                </div>
+                <div class="admin-stat-card">
+                    <span class="admin-stat-number" id="active-users">-</span>
+                    <span class="admin-stat-label">Usuarios Activos</span>
+                </div>
+            </div>            <!-- Admin Options -->
+            <div class="admin-selector">
+                <a href="SAaceptarusuarios.html" class="admin-option-card">
+                    <div class="admin-option-icon">
+                        👥
+                    </div>
+                    <h3 class="admin-option-title">Gestión de Usuarios</h3>
+                    <p class="admin-option-description">
+                        Revisar y aprobar usuarios pendientes de activación. 
+                        Gestionar solicitudes de registro y permisos de acceso.
+                    </p>
+                </a>
+
+                <a href="AdmUpReguser.html" class="admin-option-card">
+                    <div class="admin-option-icon">
+                        📊
+                    </div>
+                    <h3 class="admin-option-title">Todos los Registros</h3>
+                    <p class="admin-option-description">
+                        Ver todos los usuarios del sistema con sus registros completos. 
+                        Filtrar, buscar y exportar datos de usuarios y biomonitoreo.
+                    </p>
+                </a>
+
+                <a href="admin-estadisticas.html" class="admin-option-card">
+                    <div class="admin-option-icon">
+                        📈
+                    </div>
+                    <h3 class="admin-option-title">Estadísticas y Reportes</h3>
+                    <p class="admin-option-description">
+                        Ver métricas del sistema, gráficos de actividad y 
+                        generar reportes administrativos detallados.
+                    </p>
+                </a>
+
+                <a href="dashboard.html" class="admin-option-card">
+                    <div class="admin-option-icon">
+                        🏠
+                    </div>
+                    <h3 class="admin-option-title">Dashboard Usuario</h3>
+                    <p class="admin-option-description">
+                        Acceder al dashboard regular de usuario para 
+                        probar funcionalidades y verificar la experiencia.
+                    </p>
+                </a>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="text-center mt-5">
+                <h3 class="mb-3">Acciones Rápidas</h3>
+                <div class="d-flex justify-content-center" style="gap: 16px; flex-wrap: wrap;">
+                    <button onclick="refreshStats()" class="btn btn-secondary">
+                        🔄 Actualizar Estadísticas
+                    </button>
+                    <button onclick="exportAllData()" class="btn btn-success">
+                        📥 Exportar Todos los Datos
+                    </button>
+                    <button onclick="showSystemInfo()" class="btn btn-info">
+                        ℹ️ Información del Sistema
+                    </button>
+                </div>
+            </div>
+        </main>    </div>
+
+    <!-- Include shared authentication utilities -->
+    <script src="auth-utils.js"></script>    <script>
+        // =================================
+        // FUNCIONES DE AUTENTICACIÓN
+        // =================================
+        async function initializePage() {
+            try {
+                console.log('🚀 Inicializando panel de administrador...');
+                
+                updateProgress(10, 'Verificando autenticación...');
+                
+                // Use shared auth utilities
+                if (!checkAuthAndRedirect()) {
+                    return;
+                }
+                
+                updateProgress(30, 'Verificando permisos de administrador...');
+                
+                if (!checkAdminPermissions()) {
+                    return;
+                }
+                
+                updateProgress(50, 'Configurando interfaz...');
+                
+                // Setup header with user info
+                setupHeader();
+                
+                updateProgress(70, 'Cargando estadísticas...');
+                
+                // Load admin stats
+                await loadStats();
+                
+                updateProgress(100, 'Listo');
+                
+                setTimeout(() => {
+                    document.getElementById('loading-screen').style.display = 'none';
+                    document.getElementById('main-content').style.display = 'block';
+                    console.log('✅ Panel de administrador cargado correctamente');
+                }, 500);
+
+            } catch (error) {
+                console.error('❌ Error de inicialización:', error);
+                showError(error.message);
+            }
+        }// =================================
+        // FUNCIONES DE UI
+        // =================================
+        function updateProgress(percentage, message) {
+            const progressFill = document.getElementById('progress-fill');
+            const loadingMessage = document.getElementById('loading-message');
+            
+            if (progressFill) {
+                progressFill.style.width = `${percentage}%`;
+            }
+            
+            if (loadingMessage) {
+                loadingMessage.textContent = message;
+            }
+        }
+
+        function showError(message) {
+            document.getElementById('loading-screen').style.display = 'none';
+            document.getElementById('main-content').style.display = 'none';
+            document.getElementById('error-screen').style.display = 'flex';
+            document.getElementById('error-message').textContent = message;
+        }
+
+        // =================================
+        // FUNCIONES DE DATOS
+        // =================================
+        async function loadStats() {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) return;
+
+                // Cargar usuarios
+                const usersResponse = await fetch('/Consultas/api/getusers', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (usersResponse.ok) {
+                    const usersData = await usersResponse.json();
+                    const users = usersData.records || [];
+                    document.getElementById('total-users').textContent = users.length;
+                    document.getElementById('active-users').textContent = 
+                        users.filter(u => u.estado === 'A').length;
+                    
+                    // Calcular total de registros
+                    const totalRecords = users.reduce((sum, user) => 
+                        sum + (parseInt(user.TotalRegistros) || 0), 0);
+                    document.getElementById('total-records').textContent = totalRecords;
+                }
+
+                // Cargar usuarios pendientes
+                try {
+                    const pendingResponse = await fetch('/Consultas/api/getUsersNA', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    if (pendingResponse.ok) {
+                        const pendingData = await pendingResponse.json();
+                        document.getElementById('pending-users').textContent = 
+                            pendingData.records?.length || 0;
+                    } else {
+                        document.getElementById('pending-users').textContent = 'N/A';
+                    }
+                } catch (e) {
+                    document.getElementById('pending-users').textContent = 'N/A';
+                }
+
+            } catch (error) {
+                console.error('Error cargando estadísticas:', error);
+                // Mantener valores por defecto
+            }
+        }
+
+        // =================================
+        // FUNCIONES DE ACCIONES RÁPIDAS
+        // =================================
+        async function refreshStats() {
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = '🔄 Cargando...';
+            btn.disabled = true;
+            
+            await loadStats();
+            
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.disabled = false;
+                alert('✅ Estadísticas actualizadas');
+            }, 1000);
+        }
+
+        function exportAllData() {
+            alert('🚧 Función de exportación en desarrollo.\nPronto podrás exportar todos los datos del sistema.');
+        }        function showSystemInfo() {
+            const userData = getUserData();
+            const info = `
+📊 INFORMACIÓN DEL SISTEMA
+
+👤 Usuario: ${getUserName()}
+🔑 Rol: ${getRoleDisplayName(getUserRole())} (${getUserRole()})
+📧 Email: ${userData?.email || 'N/A'}
+⏰ Sesión expira: ${userData?.exp ? new Date(userData.exp * 1000).toLocaleString() : 'N/A'}
+
+🌐 Navegador: ${navigator.userAgent.split(' ')[0]}
+📱 Plataforma: ${navigator.platform}
+🕐 Hora actual: ${new Date().toLocaleString()}
+            `;
+            alert(info);
+        }        function redirectToLogin() {
+            window.location.href = 'login.html';
+        }
+
+        // =================================
+        // EVENTOS
+        // =================================
+        window.addEventListener('DOMContentLoaded', initializePage);
+
+        // Auto-refresh stats cada 5 minutos
+        setInterval(() => {
+            if (localStorage.getItem('token') && document.getElementById('main-content').style.display !== 'none') {
+                loadStats();
+            }
+        }, 300000);
+
+        // Verificar expiración de token cada minuto
+        setInterval(() => {
+            const userData = getUserData();
+            if (userData && userData.exp) {
+                const timeLeft = userData.exp - (Date.now() / 1000);
+                if (timeLeft < 300 && timeLeft > 0) { // 5 minutos antes
+                    alert('⚠️ Tu sesión expirará en menos de 5 minutos. Guarda tu trabajo.');
+                }
+            }
+        }, 60000);
+    </script>
+</body>
+</html>

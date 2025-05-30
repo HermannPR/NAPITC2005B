@@ -1,8 +1,716 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <style>
-        table { border-collapse: collapse; width: 100%; }
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Usuarios - Mawi Admin</title>
+    <meta name="description" content="Gestión avanzada de usuarios del sistema">
+    
+    <!-- CSS Imports -->
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="admin-loading" style="display: none;">
+        <div class="admin-loading-spinner"></div>
+        <h2 class="admin-loading-text">🔄 Cargando usuarios</h2>
+        <p class="admin-loading-subtext">Obteniendo datos del sistema...</p>
+    </div>
+
+    <!-- Main Content -->
+    <div class="admin-container">
+        <!-- Header -->
+        <header class="admin-header">
+            <div class="admin-title">
+                <h1>👥 Gestión de Usuarios</h1>
+            </div>
+            <div class="admin-user-info">
+                <span id="admin-name">Administrador</span>
+                <span class="admin-role-badge">Admin</span>
+                <a href="Adminindex.html" class="btn btn-sm btn-secondary">
+                    ← Volver al Panel
+                </a>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <main class="admin-content">
+            <!-- Stats Summary -->
+            <div class="admin-stats mb-4">
+                <div class="admin-stat-card">
+                    <span class="admin-stat-number" id="total-users">0</span>
+                    <span class="admin-stat-label">Total Usuarios</span>
+                </div>
+                <div class="admin-stat-card">
+                    <span class="admin-stat-number" id="active-users">0</span>
+                    <span class="admin-stat-label">Usuarios Activos</span>
+                </div>
+                <div class="admin-stat-card">
+                    <span class="admin-stat-number" id="users-with-records">0</span>
+                    <span class="admin-stat-label">Con Registros</span>
+                </div>
+                <div class="admin-stat-card">
+                    <span class="admin-stat-number" id="total-records">0</span>
+                    <span class="admin-stat-label">Total Registros</span>
+                </div>
+            </div>
+
+            <!-- Filters and Actions -->
+            <div class="admin-filters">
+                <div class="admin-filter-group">
+                    <label class="admin-filter-label">Buscar Usuario</label>
+                    <input type="text" id="filter-search" class="admin-filter-input" placeholder="Nombre, apellido o email...">
+                </div>
+                
+                <div class="admin-filter-group">
+                    <label class="admin-filter-label">Estado</label>
+                    <select id="filter-estado" class="admin-filter-input">
+                        <option value="">Todos los estados</option>
+                        <option value="A" selected>Activos (A)</option>
+                        <option value="P">Pendientes (P)</option>
+                        <option value="I">Inactivos (I)</option>
+                    </select>
+                </div>
+                
+                <div class="admin-filter-group">
+                    <label class="admin-filter-label">Rol</label>
+                    <select id="filter-rol" class="admin-filter-input">
+                        <option value="">Todos los roles</option>
+                        <option value="1">Usuario (1)</option>
+                        <option value="2">Biomonitor (2)</option>
+                        <option value="3">Administrador (3)</option>
+                        <option value="4">Super Admin (4)</option>
+                    </select>
+                </div>
+                
+                <div class="admin-filter-actions">
+                    <button onclick="applyFilters()" class="btn btn-primary btn-sm">
+                        🔍 Filtrar
+                    </button>
+                    <button onclick="clearFilters()" class="btn btn-secondary btn-sm">
+                        🗑️ Limpiar
+                    </button>
+                    <button onclick="refreshData()" class="btn btn-success btn-sm">
+                        🔄 Actualizar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Results Info -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <span class="text-secondary">Mostrando </span>
+                    <span id="showing-count">0</span>
+                    <span class="text-secondary"> usuarios</span>
+                </div>
+                <div>
+                    <button onclick="exportUsers()" class="btn btn-success btn-sm">
+                        📥 Exportar CSV
+                    </button>
+                </div>
+            </div>
+
+            <!-- Users Table -->
+            <div class="admin-table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th onclick="sortTable('idUsuario')">
+                                ID <span class="sort-indicator" data-column="idUsuario">↕️</span>
+                            </th>
+                            <th onclick="sortTable('Nombre')">
+                                Nombre <span class="sort-indicator" data-column="Nombre">↕️</span>
+                            </th>
+                            <th onclick="sortTable('email')">
+                                Email <span class="sort-indicator" data-column="email">↕️</span>
+                            </th>
+                            <th onclick="sortTable('rol')">
+                                Rol <span class="sort-indicator" data-column="rol">↕️</span>
+                            </th>
+                            <th onclick="sortTable('estado')">
+                                Estado <span class="sort-indicator" data-column="estado">↕️</span>
+                            </th>
+                            <th onclick="sortTable('TotalRegistros')">
+                                Registros <span class="sort-indicator" data-column="TotalRegistros">↕️</span>
+                            </th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="user-table-body">
+                        <!-- Los usuarios se cargarán aquí -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- No Results Message -->
+            <div id="no-results" class="text-center p-5" style="display: none;">
+                <h3>👤 No se encontraron usuarios</h3>
+                <p class="text-secondary">Intenta ajustar los filtros para obtener mejores resultados.</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal para ver registros del usuario -->
+    <div id="registros-modal" class="modal-overlay" style="display: none;">
+        <div class="modal" style="max-width: 800px;">
+            <div class="modal-header">
+                <h3 id="modal-title">📊 Registros del Usuario</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="modal-content">
+                <!-- Contenido se carga dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para editar usuario -->
+    <div id="edit-modal" class="modal-overlay" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>✏️ Editar Usuario</h3>
+                <button class="modal-close" onclick="closeEditModal()">&times;</button>
+            </div>
+            <div id="edit-modal-content">
+                <form id="edit-user-form">
+                    <div class="form-group">
+                        <label class="form-label">Estado</label>
+                        <select id="edit-estado" class="form-input">
+                            <option value="A">Activo</option>
+                            <option value="P">Pendiente</option>
+                            <option value="I">Inactivo</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Rol</label>
+                        <select id="edit-rol" class="form-input">
+                            <option value="1">Usuario</option>
+                            <option value="2">Biomonitor</option>
+                            <option value="3">Administrador</option>
+                            <option value="4">Super Admin</option>
+                        </select>
+                    </div>
+                    <div class="card-footer">
+                        <button type="button" onclick="closeEditModal()" class="btn btn-secondary">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>    </div>
+
+    <!-- Include shared authentication utilities -->
+    <script src="auth-utils.js"></script>
+    <script>        // =================================
+        // VARIABLES GLOBALES
+        // =================================
+        let allUsers = [];
+        let filteredUsers = [];
+        let currentSort = { column: 'idUsuario', direction: 'asc' };
+        let currentEditUserId = null;// =================================
+        // INICIALIZACIÓN
+        // =================================
+        async function initializePage() {
+            console.log('🚀 Inicializando gestión de usuarios...');
+            
+            // Use shared auth utilities
+            if (!initializeAuth(true)) {
+                return;
+            }
+            
+            try {
+                // Load users
+                await loadUsuarios();
+                
+            } catch (error) {
+                console.error('Error en inicialización:', error);
+                alert('Error cargando datos. Intentando nuevamente...');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
+            }
+        }
+
+        // =================================
+        // CARGA DE DATOS (mantenemos la lógica original)
+        // =================================
+        async function loadUsuarios() {
+            showLoading(true);
+              try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/Consultas/api/getusers', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                allUsers = data.records || [];
+                
+                console.log('✅ Usuarios cargados:', allUsers.length);
+                
+                updateStats();
+                applyFilters();
+                
+            } catch (error) {
+                console.error('Error loading users:', error);
+                alert('Error cargando los usuarios del sistema');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function refreshData() {
+            await loadUsuarios();
+            alert('✅ Datos actualizados correctamente');
+        }
+
+        // =================================
+        // ESTADÍSTICAS
+        // =================================
+        function updateStats() {
+            const activeUsers = allUsers.filter(u => u.estado === 'A');
+            const usersWithRecords = allUsers.filter(u => parseInt(u.TotalRegistros) > 0);
+            const totalRecords = allUsers.reduce((sum, user) => sum + parseInt(user.TotalRegistros || 0), 0);
+            
+            document.getElementById('total-users').textContent = allUsers.length;
+            document.getElementById('active-users').textContent = activeUsers.length;
+            document.getElementById('users-with-records').textContent = usersWithRecords.length;
+            document.getElementById('total-records').textContent = totalRecords;
+        }
+
+        // =================================
+        // FILTROS Y BÚSQUEDA
+        // =================================
+        function applyFilters() {
+            const searchTerm = document.getElementById('filter-search').value.toLowerCase();
+            const filterEstado = document.getElementById('filter-estado').value;
+            const filterRol = document.getElementById('filter-rol').value;
+            
+            filteredUsers = allUsers.filter(user => {
+                // Filtro de búsqueda
+                const searchMatch = !searchTerm || 
+                    user.Nombre.toLowerCase().includes(searchTerm) ||
+                    user.Apellidos.toLowerCase().includes(searchTerm) ||
+                    user.email.toLowerCase().includes(searchTerm);
+                
+                // Filtro de estado
+                const estadoMatch = !filterEstado || user.estado === filterEstado;
+                
+                // Filtro de rol
+                const rolMatch = !filterRol || user.rol.toString() === filterRol;
+                
+                return searchMatch && estadoMatch && rolMatch;
+            });
+            
+            // Aplicar ordenamiento
+            sortFilteredUsers();
+            displayUsers();
+        }
+
+        function clearFilters() {
+            document.getElementById('filter-search').value = '';
+            document.getElementById('filter-estado').value = 'A';
+            document.getElementById('filter-rol').value = '';
+            applyFilters();
+        }
+
+        // =================================
+        // ORDENAMIENTO
+        // =================================
+        function sortTable(column) {
+            if (currentSort.column === column) {
+                currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSort.column = column;
+                currentSort.direction = 'asc';
+            }
+            
+            updateSortIndicators();
+            sortFilteredUsers();
+            displayUsers();
+        }
+
+        function sortFilteredUsers() {
+            filteredUsers.sort((a, b) => {
+                let aVal = a[currentSort.column];
+                let bVal = b[currentSort.column];
+                
+                // Convertir a números si es necesario
+                if (currentSort.column === 'idUsuario' || currentSort.column === 'rol' || currentSort.column === 'TotalRegistros') {
+                    aVal = parseInt(aVal) || 0;
+                    bVal = parseInt(bVal) || 0;
+                }
+                
+                // Convertir a string para comparación
+                if (typeof aVal === 'string') {
+                    aVal = aVal.toLowerCase();
+                    bVal = bVal.toLowerCase();
+                }
+                
+                if (currentSort.direction === 'asc') {
+                    return aVal > bVal ? 1 : aVal < bVal ? -1 : 0;
+                } else {
+                    return aVal < bVal ? 1 : aVal > bVal ? -1 : 0;
+                }
+            });
+        }
+
+        function updateSortIndicators() {
+            // Limpiar todos los indicadores
+            document.querySelectorAll('.sort-indicator').forEach(indicator => {
+                indicator.textContent = '↕️';
+            });
+            
+            // Actualizar el indicador activo
+            const activeIndicator = document.querySelector(`[data-column="${currentSort.column}"]`);
+            if (activeIndicator) {
+                activeIndicator.textContent = currentSort.direction === 'asc' ? '↑' : '↓';
+            }
+        }
+
+        // =================================
+        // VISUALIZACIÓN DE USUARIOS
+        // =================================
+        function displayUsers() {
+            const tbody = document.getElementById('user-table-body');
+            tbody.innerHTML = '';
+            
+            if (filteredUsers.length === 0) {
+                document.getElementById('no-results').style.display = 'block';
+                document.querySelector('.admin-table-container').style.display = 'none';
+            } else {
+                document.getElementById('no-results').style.display = 'none';
+                document.querySelector('.admin-table-container').style.display = 'block';
+                
+                filteredUsers.forEach(user => {
+                    const row = createUserRow(user);
+                    tbody.appendChild(row);
+                });
+            }
+            
+            document.getElementById('showing-count').textContent = filteredUsers.length;
+        }
+
+        function createUserRow(user) {
+            const row = document.createElement('tr');
+            row.className = 'user-row';
+            row.id = `user-row-${user.idUsuario}`;
+            
+            // Definir colores de badges
+            const estadoBadge = getEstadoBadge(user.estado);
+            const rolBadge = getRolBadge(user.rol);
+            
+            row.innerHTML = `
+                <td>${user.idUsuario}</td>
+                <td>
+                    <div>
+                        <strong>${user.Nombre} ${user.Apellidos}</strong>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        ${user.email}
+                    </div>
+                </td>
+                <td>
+                    <span class="badge ${rolBadge.class}">${rolBadge.text}</span>
+                </td>
+                <td>
+                    <span class="badge ${estadoBadge.class}">${estadoBadge.text}</span>
+                </td>
+                <td>
+                    <div class="text-center">
+                        <strong>${user.TotalRegistros}</strong>
+                        ${parseInt(user.TotalRegistros) > 0 ? 
+                            `<br><button onclick="toggleUserRegistros(${user.idUsuario}, '${user.Nombre} ${user.Apellidos}')" 
+                                      class="btn btn-sm btn-info" style="margin-top: 4px;">
+                                Ver 👁️
+                             </button>` : ''}
+                    </div>
+                </td>
+                <td>
+                    <div class="admin-actions">
+                        <button onclick="editUser(${user.idUsuario})" 
+                                class="admin-action-btn admin-action-approve" 
+                                title="Editar usuario">
+                            ✏️
+                        </button>
+                        <button onclick="toggleUserStatus(${user.idUsuario})" 
+                                class="admin-action-btn ${user.estado === 'A' ? 'admin-action-reject' : 'admin-action-approve'}" 
+                                title="${user.estado === 'A' ? 'Desactivar' : 'Activar'} usuario">
+                            ${user.estado === 'A' ? '🚫' : '✅'}
+                        </button>
+                    </div>
+                </td>
+            `;
+            
+            return row;
+        }
+
+        function getEstadoBadge(estado) {
+            switch(estado) {
+                case 'A': return { class: 'badge-success', text: 'Activo' };
+                case 'P': return { class: 'badge-warning', text: 'Pendiente' };
+                case 'I': return { class: 'badge-danger', text: 'Inactivo' };
+                default: return { class: 'badge-info', text: estado };
+            }
+        }
+
+        function getRolBadge(rol) {
+            switch(parseInt(rol)) {
+                case 1: return { class: 'badge-info', text: 'Usuario' };
+                case 2: return { class: 'badge-success', text: 'Biomonitor' };
+                case 3: return { class: 'badge-warning', text: 'Admin' };
+                case 4: return { class: 'badge-danger', text: 'Super Admin' };
+                default: return { class: 'badge-info', text: `Rol ${rol}` };
+            }
+        }
+
+        // =================================
+        // ACCIONES DE USUARIO (mantenemos lógica original + mejoras)
+        // =================================
+        async function toggleUserRegistros(userId, userName) {
+            const registrosRow = document.getElementById(`registros-row-${userId}`);
+
+            if(registrosRow && registrosRow.classList.contains('show')) {
+                registrosRow.classList.remove('show');
+                return;
+            }
+
+            // Cerrar otros registros abiertos
+            document.querySelectorAll('.registros-row.show').forEach(row => {
+                row.classList.remove('show');
+            });
+
+            // Mostrar modal en lugar de desplegable
+            await viewUserRegistros(userId, userName);
+        }
+
+        async function viewUserRegistros(userId, userName) {
+            showLoading(true);
+              try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`/Consultas/api/getRegistros/${userId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                const registros = data.registros || [];
+                
+                showRegistrosModal(userName, registros);
+                
+            } catch (error) {
+                console.error('Error loading user registros:', error);
+                alert('Error cargando los registros del usuario');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function showRegistrosModal(userName, registros) {
+            document.getElementById('modal-title').textContent = `📊 Registros de ${userName}`;
+            
+            const modalContent = document.getElementById('modal-content');
+            
+            if (registros.length === 0) {
+                modalContent.innerHTML = `
+                    <div class="text-center p-4">
+                        <h4>📭 Sin registros</h4>
+                        <p class="text-secondary">Este usuario no tiene registros en el sistema.</p>
+                    </div>
+                `;
+            } else {
+                let tableHTML = `
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Estado Tiempo</th>
+                                    <th>Estación</th>
+                                    <th>Tipo Registro</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+                
+                registros.forEach(registro => {
+                    tableHTML += `
+                        <tr>
+                            <td>${registro.idFormIn}</td>
+                            <td>${registro.estadoTiempo || 'N/A'}</td>
+                            <td>${registro.estacion || 'N/A'}</td>
+                            <td>
+                                <span class="badge badge-info">${formatTipoRegistro(registro.tipoRegistro)}</span>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                tableHTML += `
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-center mt-3">
+                        <p><strong>Total: ${registros.length} registro(s)</strong></p>
+                    </div>
+                `;
+                
+                modalContent.innerHTML = tableHTML;
+            }
+            
+            document.getElementById('registros-modal').style.display = 'flex';
+        }
+
+        function formatTipoRegistro(tipo) {
+            const tipos = {
+                'variables_climaticas': 'Variables Climáticas',
+                'camaras_trampa': 'Cámaras Trampa',
+                'fauna_busqueda_libre': 'Fauna Búsqueda Libre',
+                'fauna_punto_conteo': 'Fauna Punto Conteo',
+                'fauna_transecto': 'Fauna Transecto',
+                'validacion_cobertura': 'Validación Cobertura',
+                'parcela_vegetacion': 'Parcela Vegetación'
+            };
+            return tipos[tipo] || tipo;
+        }
+
+        function editUser(userId) {
+            const user = allUsers.find(u => u.idUsuario === userId);
+            if (!user) return;
+            
+            currentEditUserId = userId;
+            document.getElementById('edit-estado').value = user.estado;
+            document.getElementById('edit-rol').value = user.rol;
+            
+            document.getElementById('edit-modal').style.display = 'flex';
+        }
+
+        function toggleUserStatus(userId) {
+            const user = allUsers.find(u => u.idUsuario === userId);
+            if (!user) return;
+            
+            const newStatus = user.estado === 'A' ? 'I' : 'A';
+            const action = newStatus === 'A' ? 'activar' : 'desactivar';
+            
+            if (confirm(`¿Estás seguro de que quieres ${action} al usuario ${user.Nombre} ${user.Apellidos}?`)) {
+                // Aquí implementarías la llamada al API para cambiar el estado
+                alert(`🚧 Función para ${action} usuario en desarrollo`);
+            }
+        }
+
+        // =================================
+        // MODALES
+        // =================================
+        function closeModal() {
+            document.getElementById('registros-modal').style.display = 'none';
+        }
+
+        function closeEditModal() {
+            document.getElementById('edit-modal').style.display = 'none';
+            currentEditUserId = null;
+        }
+
+        // =================================
+        // EXPORTACIÓN
+        // =================================
+        function exportUsers() {
+            if (filteredUsers.length === 0) {
+                alert('No hay usuarios para exportar');
+                return;
+            }
+            
+            const headers = ['ID', 'Nombre', 'Apellidos', 'Email', 'Rol', 'Estado', 'Total Registros'];
+            const csvContent = [
+                headers.join(','),
+                ...filteredUsers.map(user => [
+                    user.idUsuario,
+                    `"${user.Nombre}"`,
+                    `"${user.Apellidos}"`,
+                    user.email,
+                    user.rol,
+                    user.estado,
+                    user.TotalRegistros
+                ].join(','))
+            ].join('\n');
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `usuarios_mawi_${new Date().toISOString().split('T')[0]}.csv`;
+            link.click();
+            
+            alert(`✅ Exportados ${filteredUsers.length} usuarios a CSV`);
+        }
+
+        // =================================
+        // FORMULARIO DE EDICIÓN
+        // =================================
+        document.getElementById('edit-user-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const newEstado = document.getElementById('edit-estado').value;
+            const newRol = document.getElementById('edit-rol').value;
+            
+            // Aquí implementarías la llamada al API para actualizar el usuario
+            alert(`🚧 Función de actualización en desarrollo\nUsuario ID: ${currentEditUserId}\nNuevo Estado: ${newEstado}\nNuevo Rol: ${newRol}`);
+            
+            closeEditModal();
+        });
+
+        // =================================
+        // UTILIDADES
+        // =================================
+        function showLoading(show) {
+            document.getElementById('loading-screen').style.display = show ? 'flex' : 'none';
+        }
+
+        // =================================
+        // EVENTOS
+        // =================================
+        window.addEventListener('DOMContentLoaded', initializePage);
+
+        // Cerrar modales al hacer clic fuera
+        document.getElementById('registros-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'registros-modal') closeModal();
+        });
+
+        document.getElementById('edit-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'edit-modal') closeEditModal();
+        });
+
+        // Filtros en tiempo real
+        document.getElementById('filter-search').addEventListener('input', debounce(applyFilters, 300));
+        document.getElementById('filter-estado').addEventListener('change', applyFilters);
+        document.getElementById('filter-rol').addEventListener('change', applyFilters);
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+    </script>
         th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
         th { background-color: #f2f2f2; }
         
@@ -270,16 +978,6 @@
             function editUser(userId) {
                 console.log(`Edit user with ID: ${userId}`);
             }
-            
-            function deleteUser(userId) {
-                console.log(`Delete user with ID: ${userId}`);
-            }
-
-            window.addEventListener('DOMContentLoaded', function() {
-                loadUsuarios();
-            });
-
-            loadUsuarios();
-        </script>
+          </script>
     </body>
 </html>

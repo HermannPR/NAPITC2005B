@@ -1,3 +1,41 @@
+# Dependencies
 node_modules/
+
+# Uploads and bot files
 /public/uploads
 /public/bot
+
+# Development and testing files
+test-*.js
+debug-*.js
+hash-*.js
+*-test.js
+*-debug.js
+check-*.js
+generate-*.js
+fix-*.js
+simple-*.js
+final-*.js
+
+# Environment files
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db

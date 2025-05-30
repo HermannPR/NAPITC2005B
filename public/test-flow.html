@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Flow - MAWI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #2a2a2a;
+            color: white;
+        }
+        .test-section {
+            background-color: #333;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success { background-color: #28a745; }
+        .error { background-color: #dc3545; }
+        .warning { background-color: #ffc107; color: black; }
+        button {
+            background-color: #30a046;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #278c3b;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test de Flujo MAWI</h1>
+    
+    <div class="test-section">
+        <h2>🔐 Tests de Autenticación</h2>
+        <button onclick="testLogin()">Test Login</button>
+        <button onclick="testLogout()">Test Logout</button>
+        <button onclick="testAuthCheck()">Verificar Autenticación</button>
+        <div id="auth-results"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>🔧 Tests de Auth Utils</h2>
+        <button onclick="testAuthUtils()">Test Funciones Auth</button>
+        <button onclick="testSidebar()">Test Sidebar</button>
+        <div id="utils-results"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>📄 Tests de Páginas</h2>
+        <button onclick="testDashboard()">Test Dashboard</button>
+        <button onclick="testBiomo()">Test Biomo</button>
+        <button onclick="testConvocatorias()">Test Convocatorias</button>
+        <button onclick="testExplorador()">Test Explorador</button>
+        <div id="pages-results"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>🌐 Tests de API</h2>
+        <button onclick="testAPIConnection()">Test Conexión API</button>
+        <button onclick="testBiomoAPI()">Test API Biomo Chat</button>
+        <div id="api-results"></div>
+    </div>
+
+    <script src="auth-utils.js"></script>
+    <script>
+        function addResult(containerId, message, type = 'success') {
+            const container = document.getElementById(containerId);
+            const result = document.createElement('div');
+            result.className = `test-result ${type}`;
+            result.innerHTML = `${new Date().toLocaleTimeString()}: ${message}`;
+            container.appendChild(result);
+        }
+
+        // Tests de Autenticación
+        async function testLogin() {
+            try {
+                const response = await fetch('/Consultas/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        email: 'user@mawi.com', 
+                        password: 'User2025!' 
+                    })
+                });
+                
+                const data = await response.json();
+                if (response.ok && data.token) {
+                    localStorage.setItem('token', data.token);
+                    addResult('auth-results', '✅ Login exitoso', 'success');
+                } else {
+                    addResult('auth-results', '❌ Login falló: ' + (data.message || 'Error desconocido'), 'error');
+                }
+            } catch (error) {
+                addResult('auth-results', '❌ Error en login: ' + error.message, 'error');
+            }
+        }
+
+        function testLogout() {
+            localStorage.removeItem('token');
+            addResult('auth-results', '✅ Logout exitoso', 'success');
+        }
+
+        function testAuthCheck() {
+            const token = localStorage.getItem('token');
+            if (token) {
+                try {
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    addResult('auth-results', `✅ Token válido - Usuario: ${payload.nombre}, Rol: ${payload.rol}`, 'success');
+                } catch (error) {
+                    addResult('auth-results', '❌ Token inválido', 'error');
+                }
+            } else {
+                addResult('auth-results', '⚠️ No hay token', 'warning');
+            }
+        }
+
+        // Tests de Auth Utils
+        function testAuthUtils() {
+            try {
+                // Test funciones básicas
+                if (typeof checkAuthAndRedirect === 'function') {
+                    addResult('utils-results', '✅ checkAuthAndRedirect disponible', 'success');
+                } else {
+                    addResult('utils-results', '❌ checkAuthAndRedirect no disponible', 'error');
+                }
+
+                if (typeof getUserRole === 'function') {
+                    const role = getUserRole();
+                    addResult('utils-results', `✅ getUserRole: ${role}`, 'success');
+                } else {
+                    addResult('utils-results', '❌ getUserRole no disponible', 'error');
+                }
+
+                if (typeof getUserName === 'function') {
+                    const name = getUserName();
+                    addResult('utils-results', `✅ getUserName: ${name}`, 'success');
+                } else {
+                    addResult('utils-results', '❌ getUserName no disponible', 'error');
+                }
+
+                if (typeof initializePage === 'function') {
+                    addResult('utils-results', '✅ initializePage disponible', 'success');
+                } else {
+                    addResult('utils-results', '❌ initializePage no disponible', 'error');
+                }
+            } catch (error) {
+                addResult('utils-results', '❌ Error en auth utils: ' + error.message, 'error');
+            }
+        }
+
+        function testSidebar() {
+            try {
+                if (typeof toggleSidebar === 'function') {
+                    addResult('utils-results', '✅ toggleSidebar disponible', 'success');
+                } else {
+                    addResult('utils-results', '❌ toggleSidebar no disponible', 'error');
+                }
+
+                // Verificar si existe CSS de sidebar
+                const sidebarCSS = document.querySelector('link[href*="sidebar-styles.css"]');
+                if (sidebarCSS) {
+                    addResult('utils-results', '✅ CSS de sidebar cargado', 'success');
+                } else {
+                    addResult('utils-results', '❌ CSS de sidebar no encontrado', 'error');
+                }
+            } catch (error) {
+                addResult('utils-results', '❌ Error en sidebar: ' + error.message, 'error');
+            }
+        }
+
+        // Tests de Páginas
+        function testDashboard() {
+            testPageAccess('dashboard.html', 'pages-results');
+        }
+
+        function testBiomo() {
+            testPageAccess('biomo.html', 'pages-results');
+        }
+
+        function testConvocatorias() {
+            testPageAccess('convocatorias.html', 'pages-results');
+        }
+
+        function testExplorador() {
+            testPageAccess('explorador.html', 'pages-results');
+        }
+
+        async function testPageAccess(page, containerId) {
+            try {
+                const response = await fetch(page);
+                if (response.ok) {
+                    addResult(containerId, `✅ ${page} accesible`, 'success');
+                } else {
+                    addResult(containerId, `❌ ${page} error ${response.status}`, 'error');
+                }
+            } catch (error) {
+                addResult(containerId, `❌ ${page} error: ${error.message}`, 'error');
+            }
+        }
+
+        // Tests de API
+        async function testAPIConnection() {
+            try {
+                const response = await fetch('/Consultas/api/getusers');
+                if (response.ok) {
+                    addResult('api-results', '✅ API de usuarios accesible', 'success');
+                } else {
+                    addResult('api-results', `❌ API error ${response.status}`, 'error');
+                }
+            } catch (error) {
+                addResult('api-results', '❌ Error de conexión API: ' + error.message, 'error');
+            }
+        }
+
+        async function testBiomoAPI() {
+            try {
+                const response = await fetch('http://10.14.255.61/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer sk-mDmOn2bG9Z3GDNW-x8wdeQ'
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-3.5-turbo',
+                        messages: [{ role: 'user', content: 'Test' }],
+                        max_tokens: 10
+                    })
+                });
+                
+                if (response.ok) {
+                    addResult('api-results', '✅ API de Chat AI funcionando', 'success');
+                } else {
+                    addResult('api-results', `⚠️ API de Chat AI error ${response.status}`, 'warning');
+                }
+            } catch (error) {
+                addResult('api-results', '❌ Error en API Chat: ' + error.message, 'error');
+            }
+        }
+
+        // Auto-ejecutar algunos tests al cargar
+        window.addEventListener('DOMContentLoaded', function() {
+            addResult('auth-results', '🚀 Tests iniciados', 'success');
+            testAuthCheck();
+            testAuthUtils();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,421 @@
+/* =============================================================================
+   MAWI - ESTILOS DE SIDEBAR Y NAVEGACIÓN
+   sidebar-styles.css
+   ============================================================================= */
+
+/* Importar Font Awesome */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
+
+/* Variables CSS para consistencia */
+:root {
+  --sidebar-width: 300px;
+  --sidebar-bg: #1a1a1a;
+  --sidebar-border: #333;
+  --sidebar-text: #ccc;
+  --sidebar-text-hover: #fff;
+  --sidebar-active-bg: #30a046;
+  --sidebar-hover-bg: #333;
+  --overlay-bg: rgba(0, 0, 0, 0.5);
+  --transition-speed: 0.3s;
+  --header-height: 60px;
+}
+
+/* =============================================================================
+   CONTENEDOR PRINCIPAL
+   ============================================================================= */
+.mawi-app-container {
+  position: relative;
+  overflow: hidden;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* =============================================================================
+   HEADER
+   ============================================================================= */
+.mawi-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 24px;
+  background-color: var(--sidebar-bg);
+  border-bottom: 1px solid var(--sidebar-border);
+  position: relative;
+  z-index: 1000;
+  height: var(--header-height);
+  box-sizing: border-box;
+}
+
+.sidebar-toggle {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.sidebar-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-toggle svg {
+  width: 24px;
+  height: 24px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.eye-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.logo h2 {
+  margin: 0;
+  font-weight: 500;
+  color: white;
+}
+
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: white;
+}
+
+.avatar-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #444;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.avatar-circle:hover {
+  background-color: #555;
+}
+
+.avatar-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* =============================================================================
+   CONTENIDO DE LA APP
+   ============================================================================= */
+.app-content {
+  display: flex;
+  position: relative;
+  height: calc(100vh - var(--header-height));
+  overflow: hidden;
+}
+
+/* =============================================================================
+   SIDEBAR
+   ============================================================================= */
+.sidebar {
+  position: fixed;
+  top: var(--header-height);
+  left: calc(-1 * var(--sidebar-width));
+  width: var(--sidebar-width);
+  height: calc(100vh - var(--header-height));
+  background-color: var(--sidebar-bg);
+  border-right: 1px solid var(--sidebar-border);
+  transition: left var(--transition-speed) ease;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar.open {
+  left: 0;
+}
+
+/* Scrollbar personalizado para la sidebar */
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: var(--sidebar-bg);
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: var(--sidebar-border);
+  border-radius: 3px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* =============================================================================
+   NAVEGACIÓN DE LA SIDEBAR
+   ============================================================================= */
+.sidebar-nav {
+  padding: 16px 0;
+  flex: 1;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  padding: 14px 24px;
+  color: var(--sidebar-text);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  position: relative;
+}
+
+.sidebar-item:hover {
+  background-color: var(--sidebar-hover-bg);
+  color: var(--sidebar-text-hover);
+}
+
+.sidebar-item.active {
+  background-color: var(--sidebar-active-bg);
+  color: white;
+}
+
+.sidebar-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 4px;
+  background-color: #fff;
+}
+
+.sidebar-icon {
+  width: 20px;
+  margin-right: 12px;
+  font-size: 16px;
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.sidebar-text {
+  font-size: 14px;
+  line-height: 1.4;
+  font-weight: 400;
+}
+
+/* =============================================================================
+   FOOTER DE LA SIDEBAR
+   ============================================================================= */
+.sidebar-footer {
+  padding: 16px 24px;
+  border-top: 1px solid var(--sidebar-border);
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.support-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--sidebar-text);
+  text-decoration: none;
+  font-size: 13px;
+  padding: 8px 0;
+  transition: color 0.2s;
+}
+
+.support-link:hover {
+  color: var(--sidebar-text-hover);
+}
+
+.support-link img {
+  width: 16px;
+  height: 16px;
+  opacity: 0.7;
+}
+
+/* =============================================================================
+   OVERLAY
+   ============================================================================= */
+.sidebar-overlay {
+  position: fixed;
+  top: var(--header-height);
+  left: 0;
+  width: 100%;
+  height: calc(100vh - var(--header-height));
+  background-color: var(--overlay-bg);
+  z-index: 998;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--transition-speed) ease, visibility var(--transition-speed) ease;
+}
+
+.sidebar-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* =============================================================================
+   CONTENIDO PRINCIPAL
+   ============================================================================= */
+.main-content {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+  width: 100%;
+  background-color: #212121;
+  color: white;
+}
+
+/* Prevenir scroll del body cuando sidebar está abierta */
+body.sidebar-open {
+  overflow: hidden;
+}
+
+/* =============================================================================
+   RESPONSIVE DESIGN
+   ============================================================================= */
+
+/* Tablets */
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 280px;
+  }
+  
+  .main-content {
+    padding: 20px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .mawi-header {
+    padding: 12px 16px;
+  }
+  
+  .sidebar {
+    width: 280px;
+  }
+  
+  .main-content {
+    padding: 16px;
+  }
+  
+  .user-menu span {
+    display: none;
+  }
+  
+  .logo h2 {
+    font-size: 1.2rem;
+  }
+}
+
+/* Mobile pequeño */
+@media (max-width: 480px) {
+  .sidebar {
+    width: 100%;
+    left: -100%;
+  }
+  
+  .sidebar.open {
+    left: 0;
+  }
+  
+  .main-content {
+    padding: 12px;
+  }
+}
+
+/* Desktop grande */
+@media (min-width: 1200px) {
+  .sidebar {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: calc(100vh - var(--header-height));
+    box-shadow: none;
+  }
+  
+  .sidebar-toggle {
+    display: none;
+  }
+  
+  .sidebar-overlay {
+    display: none;
+  }
+  
+  .main-content {
+    margin-left: 0;
+    width: calc(100% - 280px);
+  }
+  
+  .app-content {
+    flex-direction: row;
+  }
+}
+
+/* =============================================================================
+   ANIMACIONES Y TRANSICIONES
+   ============================================================================= */
+@keyframes slideInRight {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.sidebar.open {
+  animation: slideInRight 0.3s ease-out;
+}
+
+/* Efectos hover suaves */
+.sidebar-item,
+.support-link,
+.sidebar-toggle,
+.avatar-circle {
+  transition: all 0.2s ease;
+}
+
+/* Focus states para accesibilidad */
+.sidebar-item:focus,
+.support-link:focus,
+.sidebar-toggle:focus {
+  outline: 2px solid var(--sidebar-active-bg);
+  outline-offset: 2px;
+}
+
+/* Estados de carga */
+.sidebar.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.sidebar.loading::after {
+  content: '⏳';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 24px;
+}

@@ -4,18 +4,24 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard - Mawi</title>
-    <meta name="description" content="Dashboard de Mawi" />
-    <link rel="stylesheet" href="style.css" />
+    <meta name="description" content="Dashboard de Mawi" />    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="css/sidebar-styles.css" />
   </head>
   <body>
     <div class="mawi-app-container">
       <header class="mawi-header">
+        <div class="sidebar-toggle" onclick="toggleSidebar()">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M4 6H20M4 12H20M4 18H20" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        
         <div class="logo">
           <img src="eye-icon.svg" alt="Mawi" class="eye-icon" />
           <h2>Mawi</h2>
         </div>
-        <div class="user-menu">
-          <span>Usuario</span>
+          <div class="user-menu">
+          <span id="user-role-display">Usuario</span>
           <div class="avatar-circle">
             <a href="perfil.html">
               <img src="avatar-placeholder.svg" alt="Usuario" />
@@ -24,7 +30,12 @@
         </div>
       </header>
 
-      <div class="dashboard-content">
+      <div class="app-content">
+        <!-- La sidebar se insertará aquí automáticamente -->
+
+        <!-- Main content -->
+        <main class="main-content">
+          <div class="dashboard-content">
         <div class="services-grid">
           <a href="biomo.html" class="service-card">
             <div class="icon-container">
@@ -60,17 +71,30 @@
               anteproyectos.
             </p>
           </a>
-        </div>
-
-        <div class="support-container">
-          <a href="#" class="support-button">
-            <img src="support-icon.svg" alt="Soporte" />
-            Contacta con el soporte
-          </a>
-        </div>
+        </div>          <div class="support-container">
+            <a href="#" class="support-button">
+              <img src="support-icon.svg" alt="Soporte" />
+              Contacta con el soporte
+            </a>
+          </div>
+        </main>
       </div>
     </div>
     
+    <!-- Include shared authentication utilities -->
+    <script src="auth-utils.js"></script>    <script>
+        // Initialize page with authentication check
+        window.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Inicializando dashboard...');
+            
+            // Inicializar página con sidebar
+            if (!initializePage({ showSidebar: true })) {
+                return;
+            }
+            
+            console.log('✅ Dashboard cargado correctamente');
+        });
+    </script>
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
   </body>
 </html>

@@ -78,18 +78,13 @@
     const payload = JSON.parse(atob(data.token.split('.')[1]))
     const rol = data.rol;
     const estado = data.estado;
-    const Nombre = payload.nombre;
-    if (rol === 1 && estado ===  'A')
+    const Nombre = payload.nombre;    if ((rol === 1 || rol === 2) && estado === 'A')
     {
       localStorage.setItem('token', data.token);
-      window.location.href = 'indexUsuario.html';
+      window.location.href = 'dashboard.html';
       alert('Bienvenido ' + Nombre);
     }
-    else if(rol === 2 && estado === 'A')
-    {
-      localStorage.setItem('token', data.token);
-      window.location.href = 'index.html';
-      alert('Bienvenido ' + Nombre);    }    else if(rol === 3 && estado === 'A')
+    else if(rol === 3 && estado === 'A')
     {
       localStorage.setItem('token', data.token);
       window.location.href = 'Adminindex.html';

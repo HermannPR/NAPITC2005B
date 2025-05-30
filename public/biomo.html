@@ -1,55 +1,39 @@
-
 <!DOCTYPE html>
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Asistente de Mi Biomo - Mawi</title>
-    <meta name="description" content="Asistente de Mi Biomo" />
-    <link rel="stylesheet" href="style.css" />
+    <meta name="description" content="Asistente de Mi Biomo" />    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="css/sidebar-styles.css" />
   </head>
   <body>
     <div class="mawi-app-container">
       <header class="mawi-header">
+        <div class="sidebar-toggle" id="sidebarToggle">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M4 6H20M4 12H20M4 18H20" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        
         <div class="logo">
           <img src="eye-icon.svg" alt="Mawi" class="eye-icon" />
           <h2>Mawi</h2>
         </div>
+        
         <div class="user-menu">
-          <span>Usuario</span>
+          <span id="userName">EcoRanger</span>
           <div class="avatar-circle">
             <img src="avatar-placeholder.svg" alt="Usuario" />
           </div>
         </div>
       </header>
 
-      <div class="app-content with-sidebar">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-          <nav class="sidebar-nav">
-            <a href="dashboard.html" class="sidebar-item">Inicio</a>
-            <a href="biomo.html" class="sidebar-item active">Asistente de Mi Biomo</a>
-            <a href="#" class="sidebar-item">Asistente Explorador de Anteproyectos</a>
-            <a href="#" class="sidebar-item">Asistente de Convocatorias</a>
-          </nav>
-          <div class="sidebar-footer">
-            <a href="#" class="support-link">
-              <img src="support-icon.svg" alt="Soporte" />
-              Contacta con el soporte
-            </a>
-          </div>
-        </aside>
+      <div class="app-content">
+        <!-- La sidebar se insertará aquí automáticamente -->
 
         <!-- Main content -->
         <main class="main-content">
-          <div class="back-button">
-            <a href="dashboard.html">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path d="M15 18L9 12L15 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </a>
-          </div>
-          
           <div class="biomo-header">
             <h1>Asistente de Mi Biomo</h1>
             <p class="biomo-id">Biomo ID: 1234</p>
@@ -69,23 +53,9 @@
                 Generar PDF
               </button>
             </div>
-          </div>
-
-          <div class="chat-container">
-            <div class="chat-messages">
-              <!-- Los mensajes irán aquí -->
-              <div class="message bot-message">
-                <p>Hola, soy tu asistente de Biomo. ¿En qué puedo ayudarte hoy?</p>
-              </div>
-              
-              <div class="message user-message">
-                <p>Necesito información sobre mi Biomo actual.</p>
-              </div>
-              
-              <div class="message bot-message">
-                <p>Claro, tu Biomo ID: 1234 presenta las siguientes características...</p>
-                <p>Puedes subir nuevos datos o generar un PDF con la información actual.</p>
-              </div>
+          </div>          <div class="chat-container">
+            <div class="chat-messages" id="chatMessages">
+              <!-- Los mensajes del chat aparecerán aquí dinámicamente -->
             </div>
             
             <div class="chat-input-container">
@@ -93,8 +63,9 @@
                 type="text" 
                 class="chat-input" 
                 placeholder="Escribe..." 
+                id="chatInput"
               />
-              <button class="send-button">
+              <button class="send-button" id="sendButton">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                   <path d="M22 2L11 13M22 2L15 22L11 13M11 13L2 9L22 2" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
@@ -104,6 +75,437 @@
         </main>
       </div>
     </div>
+
+    <!-- Scripts -->
+    <script src="auth-utils.js"></script>
+      <!-- SCRIPT TEMPORAL PARA DEBUGGING - CONFIGURAR TOKEN AUTOMÁTICAMENTE -->
+    <script>
+      // Configurar token de prueba automáticamente si no existe
+      function setupTestToken() {
+        // FORCE CLEAR AND RESET TOKEN FOR TESTING
+        console.log('🧹 Limpiando localStorage para testing...');
+        localStorage.removeItem('token');
+        localStorage.removeItem('userData');
+        
+        const token = localStorage.getItem('token');
+        if (!token) {
+          console.log('🔧 Configurando token de prueba automáticamente...');
+          const testToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QG1hd2kuY29tIiwibm9tYnJlIjoiVGVzdFVzZXIiLCJyb2wiOjIsImlhdCI6MTc0ODYzOTI1MSwiZXhwIjoxNzQ4NzI1NjUxfQ.JwSW2cXFOcR9TziM55a_xDBEbOq62h3VfiUHU5BWfiE';
+          
+          localStorage.setItem('token', testToken);
+          localStorage.setItem('userData', JSON.stringify({
+            id: 1,
+            email: "test@mawi.com",
+            nombre: "TestUser",
+            rol: 2
+          }));
+          
+          console.log('✅ Token de prueba configurado correctamente');
+          console.log('🔑 Token:', testToken);
+        } else {
+          console.log('ℹ️ Token ya existe:', token);
+        }
+      }
+      
+      // Configurar token antes de inicializar la página
+      setupTestToken();
+      
+      // Mostrar información de debugging en consola
+      function showDebugInfo() {
+        const token = localStorage.getItem('token');
+        const userData = localStorage.getItem('userData');
+        
+        console.log('🔍 DEBUG INFO:');
+        console.log('📱 Current URL:', window.location.href);
+        console.log('🔑 Token exists:', !!token);
+        console.log('👤 UserData exists:', !!userData);
+        
+        if (token) {
+          console.log('🔑 Token (first 50 chars):', token.substring(0, 50) + '...');
+        }
+        
+        if (userData) {
+          try {
+            console.log('👤 UserData:', JSON.parse(userData));
+          } catch (e) {
+            console.log('❌ Invalid UserData format:', userData);
+          }
+        }
+        
+        // Probar la URL del API
+        console.log('🌐 API URL que se usará:', '/Consultas/api/chat');
+      }
+      
+      // Mostrar debug info
+      showDebugInfo();
+    </script>
+      <script>
+      // Inicializar la aplicación cuando el DOM esté listo
+      document.addEventListener('DOMContentLoaded', function() {
+        // Inicializar página con sidebar
+        if (!initializePage({ showSidebar: true })) {
+          return;
+        }
+        
+        // Funcionalidad específica del chat
+        initializeBiomoChat();
+      });
+      
+      // Función para inicializar el chat del biomo con API de AI
+      function initializeBiomoChat() {
+        const chatInput = document.getElementById('chatInput');
+        const sendButton = document.getElementById('sendButton');
+        const chatMessages = document.getElementById('chatMessages');
+        
+        // Mostrar mensaje de bienvenida inicial
+        const welcomeMessage = document.createElement('div');
+        welcomeMessage.className = 'message bot-message';
+        welcomeMessage.innerHTML = `<p>👋 ¡Hola! Soy tu asistente especializado en biomonitoreo ambiental. Estoy aquí para ayudarte con cualquier consulta sobre tu Biomo, análisis de datos ecológicos, o gestión de proyectos ambientales. ¿En qué puedo asistirte hoy?</p>`;
+        chatMessages.appendChild(welcomeMessage);        // Configuración para el chat AI
+        // Ahora usamos la API del servidor que maneja las credenciales de forma segura
+        const CHAT_CONFIG = {
+          API_ENDPOINT: '/Consultas/api/chat',
+          CONTEXT: 'biomo'
+        };
+        
+        async function sendMessage() {
+          const message = chatInput.value.trim();
+          if (!message) return;
+          
+          // Agregar mensaje del usuario
+          const userMessage = document.createElement('div');
+          userMessage.className = 'message user-message';
+          userMessage.innerHTML = `<p>${message}</p>`;
+          chatMessages.appendChild(userMessage);
+          
+          // Limpiar input y hacer scroll
+          chatInput.value = '';
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+          
+          // Mostrar indicador de escritura
+          const typingIndicator = document.createElement('div');
+          typingIndicator.className = 'message bot-message typing-indicator';
+          typingIndicator.innerHTML = `<p>🤖 Analizando tu consulta sobre el Biomo...</p>`;
+          chatMessages.appendChild(typingIndicator);
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+            try {
+            // Llamar a la nueva API del servidor
+            const token = localStorage.getItem('token');
+            const response = await fetch(CHAT_CONFIG.API_ENDPOINT, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+              },
+              body: JSON.stringify({
+                message: message,
+                context: CHAT_CONFIG.CONTEXT
+              })
+            });
+            
+            // Remover indicador de escritura
+            chatMessages.removeChild(typingIndicator);
+            
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            
+            if (data.success) {
+              // Respuesta exitosa de la AI
+              const aiResponse = data.response;
+              
+              // Agregar respuesta de la AI
+              const botMessage = document.createElement('div');
+              botMessage.className = 'message bot-message';
+              botMessage.innerHTML = `<p>${aiResponse}</p>`;
+              chatMessages.appendChild(botMessage);
+            } else {
+              // Usar respuesta de fallback
+              const fallbackMessage = document.createElement('div');
+              fallbackMessage.className = 'message bot-message';
+              fallbackMessage.innerHTML = `<p>${data.fallbackResponse}</p>`;
+              chatMessages.appendChild(fallbackMessage);
+            }          } catch (error) {
+            console.error('Error llamando a la API de AI:', error);
+            
+            // Información adicional de debugging
+            console.log('🔍 DEBUG - Error details:');
+            console.log('📱 URL:', CHAT_CONFIG.API_ENDPOINT);
+            console.log('🔑 Token exists:', !!localStorage.getItem('token'));
+            console.log('📦 Message sent:', message);
+            console.log('🌐 Full URL attempted:', window.location.origin + CHAT_CONFIG.API_ENDPOINT);
+            
+            // Remover indicador de escritura si aún existe
+            if (chatMessages.contains(typingIndicator)) {
+              chatMessages.removeChild(typingIndicator);
+            }
+            
+            // Mostrar mensaje de error contextual con información de debugging
+            const errorMessage = document.createElement('div');
+            errorMessage.className = 'message bot-message error-message';
+            
+            // Crear respuesta de fallback más inteligente
+            let fallbackText = '';
+            const messageLower = message.toLowerCase();
+            
+            if (messageLower.includes('datos') || messageLower.includes('registros')) {
+              fallbackText = '📊 Para consultar tus datos de biomonitoreo, accede al panel de administración donde encontrarás todos tus registros organizados.';
+            } else if (messageLower.includes('subir') || messageLower.includes('cargar')) {
+              fallbackText = '📤 Para subir nuevos datos, usa el botón "Subir Datos" en la parte superior de esta página.';
+            } else if (messageLower.includes('reporte') || messageLower.includes('pdf')) {
+              fallbackText = '📋 Para generar reportes, utiliza el botón "Generar PDF" que crea análisis detallados de tus datos.';
+            } else if (messageLower.includes('especies') || messageLower.includes('biodiversidad')) {
+              fallbackText = '🌱 Para información sobre especies, consulta nuestra base de datos de biodiversidad integrada.';
+            } else {
+              fallbackText = '🔬 Como especialista en biomonitoreo, puedo ayudarte con análisis de datos, gestión de registros y generación de reportes ambientales.';
+            }            
+            errorMessage.innerHTML = `
+              <p><strong>🤖 Asistente Biomo:</strong> Lo siento, hay un problema temporal con el servicio de AI.</p>
+              <p><strong>🔍 Error:</strong> ${error.message}</p>
+              <p>${fallbackText}</p>
+              <p><em>¿Necesitas ayuda con algún tema específico del biomonitoreo?</em></p>
+              <p><small>🛠️ Debug info: URL=${CHAT_CONFIG.API_ENDPOINT}, Token=${!!localStorage.getItem('token')}</small></p>
+            `;
+            chatMessages.appendChild(errorMessage);
+          }
+          
+          // Scroll al final
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        // Event listeners para el chat
+        if (sendButton) {
+          sendButton.addEventListener('click', sendMessage);
+        }
+        
+        if (chatInput) {
+          chatInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+              sendMessage();
+            }
+          });
+        }
+        
+        // Mensaje de bienvenida mejorado
+        setTimeout(() => {
+          const welcomeMessage = document.createElement('div');
+          welcomeMessage.className = 'message bot-message';
+          welcomeMessage.innerHTML = `
+            <p>¡Hola! Soy Mawi AI, tu asistente especializado en biomonitoreo. Estoy aquí para ayudarte con:</p>
+            <ul>
+              <li>🌿 Análisis de datos de tu Biomo</li>
+              <li>📊 Interpretación de métricas ambientales</li>
+              <li>📋 Gestión de registros de biodiversidad</li>
+              <li>🔍 Recomendaciones para monitoreo</li>
+              <li>📄 Generación de reportes</li>
+            </ul>
+            <p>¿En qué puedo ayudarte hoy?</p>
+          `;
+          chatMessages.appendChild(welcomeMessage);
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+        }, 1000);
+      }
+    </script>
+
+    <style>
+      /* Estilos específicos para biomo.html */
+      .biomo-header {
+        margin-bottom: 24px;
+      }
+      
+      .biomo-header h1 {
+        text-align: left;
+        margin-bottom: 4px;
+        font-size: 1.5rem;
+        color: white;
+      }
+      
+      .biomo-id {
+        color: #ccc;
+        margin: 0 0 16px;
+        font-size: 0.9rem;
+      }
+      
+      .biomo-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      
+      .action-button {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background-color: #30a046;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 10px 16px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+      
+      .action-button:hover {
+        background-color: #278c3b;
+      }
+      
+      .chat-container {
+        background-color: #333;
+        border-radius: 8px;
+        height: calc(100vh - 280px);
+        display: flex;
+        flex-direction: column;
+        min-height: 400px;
+      }
+      
+      .chat-messages {
+        flex: 1;
+        padding: 16px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      
+      .message {
+        max-width: 80%;
+        padding: 12px 16px;
+        border-radius: 8px;
+        line-height: 1.5;
+      }
+      
+      .bot-message {
+        background-color: #444;
+        align-self: flex-start;
+        border-top-left-radius: 0;
+      }
+      
+      .user-message {
+        background-color: #30a046;
+        align-self: flex-end;
+        border-bottom-right-radius: 0;
+      }
+      
+      .message p {
+        margin: 0 0 8px;
+        color: white;
+      }
+      
+      .message p:last-child {
+        margin: 0;
+      }
+      
+      .chat-input-container {
+        display: flex;
+        padding: 16px;
+        border-top: 1px solid #444;
+        gap: 8px;
+      }
+      
+      .chat-input {
+        flex: 1;
+        background-color: #444;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 16px;
+        color: white;
+        font-size: 14px;
+      }
+      
+      .chat-input:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(48, 160, 70, 0.5);
+      }
+      
+      .chat-input::placeholder {
+        color: #999;
+      }
+      
+      .send-button {
+        background-color: #30a046;
+        border: none;
+        border-radius: 8px;
+        width: 42px;
+        height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+      
+      .send-button:hover {
+        background-color: #278c3b;
+      }
+      
+      /* Estilos adicionales para el chat con AI */
+      .typing-indicator {
+        animation: pulse 1.5s infinite;
+      }
+      
+      @keyframes pulse {
+        0% { opacity: 0.6; }
+        50% { opacity: 1; }
+        100% { opacity: 0.6; }
+      }
+      
+      .error-message {
+        border-left: 4px solid #ff6b6b;
+        background-color: #4a2c2c !important;
+      }
+      
+      .message ul {
+        margin: 8px 0;
+        padding-left: 20px;
+      }
+      
+      .message li {
+        margin: 4px 0;
+        color: #e0e0e0;
+      }
+      
+      .chat-input:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+      
+      .send-button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        background-color: #666;
+      }
+      
+      .welcome-message {
+        border-left: 4px solid #30a046;
+        background-color: #2d4a2d !important;
+      }
+      
+      /* Media queries para responsividad */
+      @media (max-width: 768px) {
+        .biomo-actions {
+          flex-direction: column;
+        }
+        
+        .action-button {
+          justify-content: center;
+        }
+        
+        .chat-container {
+          height: calc(100vh - 320px);
+        }
+        
+        .main-content {
+          padding: 16px;
+        }
+        
+        .message {
+          max-width: 95%;
+        }
+      }
+    </style>
 
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
   </body>

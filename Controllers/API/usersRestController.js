@@ -36,21 +36,35 @@ async function execLogin(req, res) {
  * @param {*} res la respuesta del usuario
  * @param {*} next el metodo que sera ejecutado
  * @returns accesos no autorizados
- */
-    async function authenticateToken(req, res, next)
+ */    async function authenticateToken(req, res, next)
     {
+        console.log('🔐 DEBUG: authenticateToken called');
+        console.log('Headers:', req.headers);
+        
         let token = null;
         const authHeader = req.headers['authorization'];
         if(authHeader && authHeader.startsWith('Bearer ')){
             token = authHeader.split(' ')[1];
+            console.log('✅ Token found in Authorization header');
         } else if (req.query && req.query.token){
             token = req.query.token;
+            console.log('✅ Token found in query params');
         }
 
-        if(!token) return res.sendStatus(401);
+        if(!token) {
+            console.log('❌ No token found - returning 401');
+            return res.sendStatus(401);
+        }
+        
+        console.log('🔑 Token to verify:', token.substring(0, 20) + '...');
+        console.log('🔐 SECRET:', SECRET);
         
         jwt.verify(token, SECRET, (err, user) => {
-            if (err) return res.sendStatus(403);
+            if (err) {
+                console.log('❌ JWT verification failed:', err.message);
+                return res.sendStatus(403);
+            }
+            console.log('✅ JWT verification successful, user:', user);
             req.user = user;
             next();
         });

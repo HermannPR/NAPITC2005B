@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnóstico AI Service - MAWI</title>
+    <link rel="stylesheet" href="css/base.css">
+    <style>
+        .diagnostic-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .diagnostic-header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2c5530;
+        }
+        
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        
+        .test-button {
+            background: #4a7c59;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        
+        .test-button:hover {
+            background: #2c5530;
+        }
+        
+        .result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        
+        .result.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .result.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .result.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+        
+        .log-section {
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        
+        .config-info {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        
+        .chat-test {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .chat-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        
+        .response-box {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            min-height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="diagnostic-container">
+        <div class="diagnostic-header">
+            <h1>🔧 Diagnóstico del Servicio AI</h1>
+            <p>Panel de diagnóstico para verificar el estado del servicio de AI de MAWI</p>
+        </div>
+        
+        <div class="config-info">
+            <h3>📋 Configuración Actual</h3>
+            <div id="config-display">Cargando configuración...</div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🌐 Pruebas de Conectividad</h3>
+            <button class="test-button" onclick="testServerConnection()">Probar Conexión Servidor</button>
+            <button class="test-button" onclick="testAIEndpoint()">Probar Endpoint AI</button>
+            <button class="test-button" onclick="testAuthentication()">Probar Autenticación</button>
+            <div id="connectivity-results"></div>
+        </div>
+        
+        <div class="chat-test">
+            <h3>💬 Prueba de Chat AI</h3>
+            <p>Escribe un mensaje para probar el sistema de chat AI:</p>
+            <select id="context-select" class="chat-input">
+                <option value="biomo">Contexto: Biomo</option>
+                <option value="explorador">Contexto: Explorador</option>
+            </select>
+            <input type="text" id="chat-message" class="chat-input" placeholder="Escribe tu mensaje aquí..." />
+            <button class="test-button" onclick="testChatMessage()">Enviar Mensaje de Prueba</button>
+            <div class="response-box" id="chat-response">Las respuestas aparecerán aquí...</div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🔄 Pruebas de Fallback</h3>
+            <button class="test-button" onclick="testFallbackResponses()">Probar Respuestas de Fallback</button>
+            <div id="fallback-results"></div>
+        </div>
+        
+        <div class="log-section" id="diagnostic-log">
+            <strong>📜 Log de Diagnóstico:</strong><br>
+            Iniciando diagnóstico...<br>
+        </div>
+        
+        <div style="text-align: center; margin-top: 20px;">
+            <button class="test-button" onclick="runAllTests()">🚀 Ejecutar Todas las Pruebas</button>
+            <button class="test-button" onclick="clearLog()">🗑️ Limpiar Log</button>
+        </div>
+    </div>
+
+    <script>
+        const log = document.getElementById('diagnostic-log');
+        
+        function addToLog(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type === 'error' ? 'color: red;' : type === 'success' ? 'color: green;' : 'color: blue;';
+            log.innerHTML += `<span style="${className}">[${timestamp}] ${message}</span><br>`;
+            log.scrollTop = log.scrollHeight;
+        }
+        
+        function addResult(containerId, message, type) {
+            const container = document.getElementById(containerId);
+            const result = document.createElement('div');
+            result.className = `result ${type}`;
+            result.textContent = message;
+            container.appendChild(result);
+        }
+        
+        function clearResults(containerId) {
+            document.getElementById(containerId).innerHTML = '';
+        }
+        
+        function clearLog() {
+            log.innerHTML = '<strong>📜 Log de Diagnóstico:</strong><br>';
+        }
+        
+        // Cargar configuración
+        async function loadConfiguration() {
+            try {
+                addToLog('Cargando configuración del servidor...', 'info');
+                // Simulamos la configuración (en producción esto vendría del servidor)
+                const config = {
+                    AI_API_ENDPOINT: 'http://10.14.255.61/v1/chat/completions',
+                    AI_MODEL: 'gpt-3.5-turbo',
+                    SERVER_PORT: '3000',
+                    API_ENDPOINT: '/Consultas/api/chat'
+                };
+                
+                document.getElementById('config-display').innerHTML = `
+                    <strong>Endpoint AI:</strong> ${config.AI_API_ENDPOINT}<br>
+                    <strong>Modelo:</strong> ${config.AI_MODEL}<br>
+                    <strong>Puerto Servidor:</strong> ${config.SERVER_PORT}<br>
+                    <strong>API Local:</strong> ${config.API_ENDPOINT}
+                `;
+                addToLog('Configuración cargada correctamente', 'success');
+            } catch (error) {
+                addToLog('Error cargando configuración: ' + error.message, 'error');
+            }
+        }
+        
+        // Probar conexión con el servidor
+        async function testServerConnection() {
+            clearResults('connectivity-results');
+            addToLog('Probando conexión con servidor local...', 'info');
+            
+            try {
+                const response = await fetch('/');
+                if (response.ok) {
+                    addResult('connectivity-results', '✅ Servidor local conectado correctamente', 'success');
+                    addToLog('Conexión con servidor: OK', 'success');
+                } else {
+                    addResult('connectivity-results', `⚠️ Servidor responde con status ${response.status}`, 'warning');
+                    addToLog(`Servidor responde con status ${response.status}`, 'error');
+                }
+            } catch (error) {
+                addResult('connectivity-results', '❌ Error de conexión con servidor local', 'error');
+                addToLog('Error de conexión: ' + error.message, 'error');
+            }
+        }
+        
+        // Probar endpoint AI directamente
+        async function testAIEndpoint() {
+            addToLog('Probando endpoint AI externo...', 'info');
+            
+            try {
+                const response = await fetch('http://10.14.255.61/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer sk-mDmOn2bG9Z3GDNW-x8wdeQ'
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-3.5-turbo',
+                        messages: [{ role: 'user', content: 'Test' }],
+                        max_tokens: 10
+                    })
+                });
+                
+                if (response.ok) {
+                    addResult('connectivity-results', '✅ Endpoint AI externo accesible', 'success');
+                    addToLog('Endpoint AI: Accesible', 'success');
+                } else {
+                    addResult('connectivity-results', `⚠️ Endpoint AI error ${response.status}`, 'warning');
+                    addToLog(`Endpoint AI error: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                addResult('connectivity-results', '❌ Endpoint AI no accesible (esperado en red local)', 'error');
+                addToLog('Endpoint AI no accesible: ' + error.message, 'error');
+            }
+        }
+        
+        // Probar autenticación
+        async function testAuthentication() {
+            addToLog('Verificando autenticación...', 'info');
+            
+            const token = localStorage.getItem('token');
+            if (!token) {
+                addResult('connectivity-results', '⚠️ No hay token de autenticación almacenado', 'warning');
+                addToLog('Sin token de autenticación', 'error');
+                return;
+            }
+            
+            try {
+                // Verificar token con endpoint protegido
+                const response = await fetch('/Consultas/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        message: 'Test de autenticación',
+                        context: 'biomo'
+                    })
+                });
+                
+                if (response.ok) {
+                    addResult('connectivity-results', '✅ Autenticación válida', 'success');
+                    addToLog('Autenticación: Válida', 'success');
+                } else if (response.status === 401) {
+                    addResult('connectivity-results', '❌ Token de autenticación inválido', 'error');
+                    addToLog('Token inválido', 'error');
+                } else {
+                    addResult('connectivity-results', `⚠️ Error de autenticación: ${response.status}`, 'warning');
+                    addToLog(`Error de autenticación: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                addResult('connectivity-results', '❌ Error probando autenticación', 'error');
+                addToLog('Error en autenticación: ' + error.message, 'error');
+            }
+        }
+        
+        // Probar mensaje de chat
+        async function testChatMessage() {
+            const message = document.getElementById('chat-message').value.trim();
+            const context = document.getElementById('context-select').value;
+            const responseBox = document.getElementById('chat-response');
+            
+            if (!message) {
+                alert('Por favor, escribe un mensaje para probar');
+                return;
+            }
+            
+            addToLog(`Enviando mensaje de prueba: "${message}" (contexto: ${context})`, 'info');
+            responseBox.innerHTML = '🤖 Procesando mensaje...';
+            
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/Consultas/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        context: context
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    if (data.success) {
+                        responseBox.innerHTML = `
+                            <strong>✅ Respuesta AI exitosa:</strong><br>
+                            <em>${data.response}</em><br>
+                            <small>Modelo: ${data.model}</small>
+                        `;
+                        addToLog('Respuesta AI recibida correctamente', 'success');
+                    } else {
+                        responseBox.innerHTML = `
+                            <strong>⚠️ AI no disponible, usando fallback:</strong><br>
+                            <em>${data.fallbackResponse}</em><br>
+                            <small>Error: ${data.error}</small>
+                        `;
+                        addToLog('AI no disponible, fallback activado', 'error');
+                    }
+                } else {
+                    responseBox.innerHTML = `<strong>❌ Error del servidor:</strong> ${response.status}`;
+                    addToLog(`Error del servidor: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                responseBox.innerHTML = `<strong>❌ Error de conexión:</strong> ${error.message}`;
+                addToLog('Error de conexión: ' + error.message, 'error');
+            }
+        }
+        
+        // Probar respuestas de fallback
+        async function testFallbackResponses() {
+            clearResults('fallback-results');
+            addToLog('Probando respuestas de fallback...', 'info');
+            
+            const testMessages = [
+                { message: 'datos de biomo', context: 'biomo' },
+                { message: 'subir información', context: 'biomo' },
+                { message: 'buscar convocatorias', context: 'explorador' },
+                { message: 'crear proyecto', context: 'explorador' }
+            ];
+            
+            for (const test of testMessages) {
+                try {
+                    // Simular error de AI para activar fallback
+                    const response = await fetch('/Consultas/api/chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        },
+                        body: JSON.stringify(test)
+                    });
+                    
+                    const data = await response.json();
+                    if (data.fallbackResponse) {
+                        addResult('fallback-results', `✅ Fallback para "${test.message}": OK`, 'success');
+                    }
+                } catch (error) {
+                    addResult('fallback-results', `❌ Error probando fallback para "${test.message}"`, 'error');
+                }
+            }
+            
+            addToLog('Pruebas de fallback completadas', 'success');
+        }
+        
+        // Ejecutar todas las pruebas
+        async function runAllTests() {
+            addToLog('=== INICIANDO BATERÍA COMPLETA DE PRUEBAS ===', 'info');
+            clearLog();
+            
+            await loadConfiguration();
+            await testServerConnection();
+            await testAIEndpoint();
+            await testAuthentication();
+            await testFallbackResponses();
+            
+            addToLog('=== PRUEBAS COMPLETADAS ===', 'success');
+        }
+        
+        // Cargar configuración al iniciar
+        document.addEventListener('DOMContentLoaded', function() {
+            loadConfiguration();
+            addToLog('Página de diagnóstico cargada', 'success');
+        });
+        
+        // Event listener para Enter en el input de chat
+        document.getElementById('chat-message').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                testChatMessage();
+            }
+        });
+    </script>
+</body>
+</html>

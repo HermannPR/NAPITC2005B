@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Usuario - Mawi</title>
+    <meta name="description" content="Dashboard para usuarios del sistema de biomonitoreo">
+    
+    <!-- CSS Imports -->
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
+    
+    <style>
+        /* Estilos específicos para dashboard de usuario */
+        .user-dashboard {
+            min-height: 100vh;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+        }
+        
+        .user-header {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .user-title h1 {
+            color: var(--primary-color);
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-name {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        
+        .user-role-badge {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--border-radius);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        .user-content {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .welcome-section h2 {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .welcome-section p {
+            color: var(--text-secondary);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .stat-number {
+            display: block;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .forms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .form-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+            display: block;
+        }
+        
+        .form-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-color: var(--primary-color);
+        }
+        
+        .form-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .form-title {
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        .recent-records {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+        }
+        
+        .recent-records h3 {
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+        
+        .record-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .record-item:last-child {
+            border-bottom: none;
+        }
+        
+        .record-type {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        
+        .record-date {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .quick-actions {
+            text-align: center;
+            margin-top: 2rem;
+        }
+        
+        .quick-actions h3 {
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        
+        .actions-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        @media (max-width: 768px) {
+            .user-header {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .user-content {
+                padding: 1rem;
+            }
+            
+            .stats-grid,
+            .forms-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="user-dashboard">
+    <!-- Header -->
+    <header class="user-header">
+        <div class="user-title">
+            <h1>🌿 Dashboard Biomonitoreo</h1>
+        </div>
+        <div class="user-info">
+            <span id="user-name" class="user-name">Usuario</span>
+            <span id="user-role-badge" class="user-role-badge">Usuario</span>
+            <button onclick="logout()" class="btn btn-sm btn-secondary">
+                Cerrar Sesión
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="user-content">
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <h2>Bienvenido al Sistema de Biomonitoreo</h2>
+            <p>Selecciona un formulario para registrar tus observaciones de campo</p>
+        </div>
+
+        <!-- Stats Overview -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span id="total-records" class="stat-number">0</span>
+                <span class="stat-label">Registros Totales</span>
+            </div>
+            <div class="stat-card">
+                <span id="this-month-records" class="stat-number">0</span>
+                <span class="stat-label">Este Mes</span>
+            </div>
+            <div class="stat-card">
+                <span id="last-record-date" class="stat-number">--</span>
+                <span class="stat-label">Último Registro</span>
+            </div>
+            <div class="stat-card">
+                <span id="favorite-form" class="stat-number">--</span>
+                <span class="stat-label">Formulario Favorito</span>
+            </div>
+        </div>
+
+        <!-- Biomonitoring Forms -->
+        <h3 style="margin-bottom: 1.5rem; color: var(--text-primary);">📋 Formularios de Biomonitoreo</h3>
+        <div class="forms-grid">
+            <a href="form-variables-climaticas.html" class="form-card">
+                <div class="form-icon">🌡️</div>
+                <div class="form-title">Variables Climáticas</div>
+                <div class="form-description">
+                    Registro de temperatura, humedad, precipitación y otras variables climáticas del área de estudio.
+                </div>
+            </a>
+
+            <a href="form-camaras-trampa.html" class="form-card">
+                <div class="form-icon">📷</div>
+                <div class="form-title">Cámaras Trampa</div>
+                <div class="form-description">
+                    Instalación y monitoreo de cámaras trampa para observación de fauna silvestre.
+                </div>
+            </a>
+
+            <a href="form-fauna-busqueda-libre.html" class="form-card">
+                <div class="form-icon">🦎</div>
+                <div class="form-title">Fauna - Búsqueda Libre</div>
+                <div class="form-description">
+                    Registro de avistamientos de fauna durante recorridos de observación libre.
+                </div>
+            </a>
+
+            <a href="form-fauna-punto-conteo.html" class="form-card">
+                <div class="form-icon">🔍</div>
+                <div class="form-title">Fauna - Punto de Conteo</div>
+                <div class="form-description">
+                    Conteo sistemático de fauna desde puntos fijos de observación establecidos.
+                </div>
+            </a>
+
+            <a href="form-fauna-transecto.html" class="form-card">
+                <div class="form-icon">🚶</div>
+                <div class="form-title">Fauna - Transecto</div>
+                <div class="form-description">
+                    Registro de fauna observada a lo largo de transectos lineales predefinidos.
+                </div>
+            </a>
+
+            <a href="form-validacion-cobertura.html" class="form-card">
+                <div class="form-icon">🌳</div>
+                <div class="form-title">Validación de Cobertura</div>
+                <div class="form-description">
+                    Validación y análisis de la cobertura vegetal en áreas de monitoreo.
+                </div>
+            </a>
+
+            <a href="form-parcela-vegetacion.html" class="form-card">
+                <div class="form-icon">🌱</div>
+                <div class="form-title">Parcela de Vegetación</div>
+                <div class="form-description">
+                    Inventario detallado de especies vegetales en parcelas de estudio establecidas.
+                </div>
+            </a>
+        </div>
+
+        <!-- Recent Records -->
+        <div class="recent-records">
+            <h3>📊 Registros Recientes</h3>
+            <div id="recent-records-list">
+                <div class="record-item">
+                    <span class="record-type">No hay registros recientes</span>
+                    <span class="record-date">--</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <h3>Acciones Rápidas</h3>
+            <div class="actions-buttons">
+                <button onclick="refreshUserStats()" class="btn btn-secondary">
+                    🔄 Actualizar Estadísticas
+                </button>
+                <button onclick="exportUserData()" class="btn btn-success">
+                    📥 Exportar Mis Datos
+                </button>
+                <button onclick="showUserProfile()" class="btn btn-info">
+                    👤 Mi Perfil
+                </button>
+                <button onclick="showHelp()" class="btn btn-warning">
+                    ❓ Ayuda
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Include shared authentication utilities -->
+    <script src="auth-utils.js"></script>
+    <script>
+        // =================================
+        // INICIALIZACIÓN
+        // =================================
+        async function initializePage() {
+            console.log('🚀 Inicializando dashboard de usuario...');
+            
+            try {
+                // Verificar autenticación
+                if (!checkAuthAndRedirect()) {
+                    return;
+                }
+                
+                // Verificar que sea usuario básico (opcional, puede acceder cualquier rol)
+                const userRole = getUserRole();
+                console.log('Rol del usuario:', userRole);
+                
+                // Setup header with user info
+                setupHeader();
+                
+                // Load user stats
+                await loadUserStats();
+                await loadRecentRecords();
+                
+                console.log('✅ Dashboard cargado correctamente');
+                
+            } catch (error) {
+                console.error('❌ Error inicializando dashboard:', error);
+                alert('Error cargando el dashboard. Por favor, inicia sesión nuevamente.');
+                logout();
+            }
+        }
+
+        // =================================
+        // FUNCIONES DE DATOS
+        // =================================
+        async function loadUserStats() {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) return;
+
+                // Obtener registros del usuario
+                const response = await fetch('/Consultas/api/getUserRecords', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const records = data.records || [];
+                    
+                    // Actualizar estadísticas
+                    document.getElementById('total-records').textContent = records.length;
+                    
+                    // Calcular registros de este mes
+                    const thisMonth = new Date().getMonth();
+                    const thisYear = new Date().getFullYear();
+                    const thisMonthRecords = records.filter(record => {
+                        const recordDate = new Date(record.created_at || record.fecha);
+                        return recordDate.getMonth() === thisMonth && recordDate.getFullYear() === thisYear;
+                    });
+                    document.getElementById('this-month-records').textContent = thisMonthRecords.length;
+                    
+                    // Último registro
+                    if (records.length > 0) {
+                        const lastRecord = records[records.length - 1];
+                        const lastDate = new Date(lastRecord.created_at || lastRecord.fecha);
+                        document.getElementById('last-record-date').textContent = lastDate.toLocaleDateString();
+                    }
+                    
+                } else {
+                    console.warn('No se pudieron cargar las estadísticas del usuario');
+                }
+                
+            } catch (error) {
+                console.error('Error cargando estadísticas:', error);
+                // Mantener valores por defecto
+            }
+        }
+
+        async function loadRecentRecords() {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) return;
+
+                const response = await fetch('/Consultas/api/getUserRecords', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const records = data.records || [];
+                    const recentRecords = records.slice(-5); // Últimos 5 registros
+                    
+                    const recordsList = document.getElementById('recent-records-list');
+                    
+                    if (recentRecords.length === 0) {
+                        recordsList.innerHTML = `
+                            <div class="record-item">
+                                <span class="record-type">No hay registros recientes</span>
+                                <span class="record-date">Comienza creando tu primer registro</span>
+                            </div>
+                        `;
+                    } else {
+                        recordsList.innerHTML = recentRecords.map(record => `
+                            <div class="record-item">
+                                <span class="record-type">${getFormTypeName(record.form_type || record.tipo)}</span>
+                                <span class="record-date">${new Date(record.created_at || record.fecha).toLocaleDateString()}</span>
+                            </div>
+                        `).join('');
+                    }
+                }
+                
+            } catch (error) {
+                console.error('Error cargando registros recientes:', error);
+            }
+        }
+
+        function getFormTypeName(type) {
+            const formTypes = {
+                'variables-climaticas': 'Variables Climáticas',
+                'camaras-trampa': 'Cámaras Trampa',
+                'fauna-busqueda-libre': 'Fauna - Búsqueda Libre',
+                'fauna-punto-conteo': 'Fauna - Punto de Conteo',
+                'fauna-transecto': 'Fauna - Transecto',
+                'validacion-cobertura': 'Validación de Cobertura',
+                'parcela-vegetacion': 'Parcela de Vegetación'
+            };
+            return formTypes[type] || 'Registro';
+        }
+
+        // =================================
+        // FUNCIONES DE ACCIONES
+        // =================================
+        async function refreshUserStats() {
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = '🔄 Cargando...';
+            btn.disabled = true;
+            
+            await loadUserStats();
+            await loadRecentRecords();
+            
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.disabled = false;
+                alert('✅ Estadísticas actualizadas');
+            }, 1000);
+        }
+
+        function exportUserData() {
+            alert('🚧 Función de exportación en desarrollo.\nPronto podrás exportar todos tus registros.');
+        }
+
+        function showUserProfile() {
+            const userData = getUserData();
+            const info = `
+👤 PERFIL DE USUARIO
+
+📧 Email: ${userData?.email || 'N/A'}
+🔑 Rol: ${getRoleDisplayName(getUserRole())}
+📊 Registros totales: ${document.getElementById('total-records').textContent}
+📅 Último registro: ${document.getElementById('last-record-date').textContent}
+⏰ Sesión expira: ${userData?.exp ? new Date(userData.exp * 1000).toLocaleString() : 'N/A'}
+            `;
+            alert(info);
+        }
+
+        function showHelp() {
+            alert(`
+🌿 AYUDA - SISTEMA DE BIOMONITOREO
+
+📋 ¿Cómo usar los formularios?
+1. Selecciona el tipo de monitoreo que vas a realizar
+2. Completa todos los campos requeridos
+3. Revisa la información antes de enviar
+4. Guarda el registro para futuras consultas
+
+📱 Formularios disponibles:
+• Variables Climáticas - Datos meteorológicos
+• Cámaras Trampa - Monitoreo de fauna
+• Fauna (3 tipos) - Observaciones directas
+• Vegetación (2 tipos) - Análisis botánico
+
+❓ ¿Necesitas más ayuda?
+Contacta al administrador del sistema.
+            `);
+        }
+
+        // =================================
+        // EVENTOS
+        // =================================
+        window.addEventListener('DOMContentLoaded', initializePage);
+
+        // Auto-refresh stats cada 10 minutos
+        setInterval(() => {
+            if (localStorage.getItem('token')) {
+                loadUserStats();
+                loadRecentRecords();
+            }
+        }, 600000);
+    </script>
+</body>
+</html>

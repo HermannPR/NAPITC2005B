@@ -3,14 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Asistente de Convocatorias - Mawi</title>
-    <meta name="description" content="Asistente de Convocatorias" />
-    <link rel="stylesheet" href="style.css" />
+    <title>Asistente de Nuevas Convocatorias - Mawi</title>
+    <meta name="description" content="Asistente de Nuevas Convocatorias" />    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="css/sidebar-styles.css" />
   </head>
   <body>
-    <div class="mawi-app-container with-sidebar-toggle">
+    <div class="mawi-app-container">
       <header class="mawi-header">
-        <div class="sidebar-toggle">
+        <div class="sidebar-toggle" id="sidebarToggle">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
             <path d="M4 6H20M4 12H20M4 18H20" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
@@ -22,139 +22,459 @@
         </div>
         
         <div class="user-menu">
-          <span>Usuario</span>
+          <span id="userName">EcoRanger</span>
           <div class="avatar-circle">
             <img src="avatar-placeholder.svg" alt="Usuario" />
           </div>
         </div>
       </header>
 
-      <!-- Sidebar colapsable -->
-      <aside class="sidebar collapsed" id="sidebar">
-        <nav class="sidebar-nav">
-          <a href="dashboard.html" class="sidebar-item">Inicio</a>
-          <a href="biomo.html" class="sidebar-item">Asistente de Mi Biomo</a>
-          <a href="explorador.html" class="sidebar-item">Asistente Explorador de Anteproyectos</a>
-          <a href="convocatorias.html" class="sidebar-item active">Asistente de Convocatorias</a>
-        </nav>
-        <div class="sidebar-footer">
-          <a href="#" class="support-link">
-            <img src="support-icon.svg" alt="Soporte" />
-            Contacta con el soporte
-          </a>
-        </div>
-      </aside>
-
       <div class="app-content">
-        <main class="main-content full-width">
-          <div class="biomo-header">
-            <h1>Asistente de Convocatorias</h1>
+        <!-- La sidebar se insertará aquí automáticamente -->
+
+        <!-- Main content -->
+        <main class="main-content">
+          <div class="back-button">
+            <a href="dashboard.html">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M15 18L9 12L15 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          </div>
+          
+          <div class="page-header">
+            <h1>Asistente de Nuevas Convocatorias</h1>
           </div>
 
           <div class="convocatorias-form">
-            <div class="form-group">
-              <label for="convocatoria-name">Nombre de la convocatoria</label>
-              <input 
-                type="text" 
-                id="convocatoria-name"
-                class="form-input" 
-                placeholder="¿Cómo vas a llamar a tu propuesta?"
-              />
-            </div>
+            <form id="convocatoriaForm">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="nombre-anteproyecto">Nombre del anteproyecto</label>
+                  <input 
+                    type="text" 
+                    id="nombre-anteproyecto"
+                    class="form-input" 
+                    placeholder="Escribe..."
+                    required
+                  />
+                </div>
 
-            <div class="form-group">
-              <label for="fecha-cierre">Fecha de cierre</label>
-              <input 
-                type="date" 
-                id="fecha-cierre"
-                class="form-input" 
-                placeholder="DD/MM/YYYY"
-              />
-            </div>
+                <div class="form-group">
+                  <label for="region">Región</label>
+                  <input 
+                    type="text" 
+                    id="region"
+                    class="form-input" 
+                    placeholder="Escribe..."
+                    required
+                  />
+                </div>
+              </div>
 
-            <div class="form-group">
-              <label for="sitio-web">Sitio web</label>
-              <input 
-                type="url" 
-                id="sitio-web"
-                class="form-input" 
-                placeholder="Inserta la URL"
-              />
-            </div>
-            
-            <div class="form-group">
-              <label for="region">Región</label>
-              <input 
-                type="text" 
-                id="region"
-                class="form-input" 
-                placeholder="¿En qué región se organiza el proyecto?"
-              />
-            </div>
-            
-            <div class="form-group">
-              <label for="organizacion">Organización</label>
-              <input 
-                type="text" 
-                id="organizacion"
-                class="form-input" 
-                placeholder="Inserta el nombre de la organización"
-              />
-            </div>
-            
-            <div class="form-group">
-              <label for="pais">País o Zona Geográfica</label>
-              <input 
-                type="text" 
-                id="pais"
-                class="form-input" 
-                placeholder="¿Para qué lugar se plantea el proyecto?"
-              />
-            </div>
-            
-            <div class="form-group">
-              <label for="descripcion">Descripción</label>
-              <textarea
-                id="descripcion"
-                class="form-input" 
-                placeholder="Descripción de qué va a ser el proyecto"
-                rows="4"
-              ></textarea>
-            </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="fecha-cierre">Fecha de cierre</label>
+                  <input 
+                    type="date" 
+                    id="fecha-cierre"
+                    class="form-input" 
+                    required
+                  />
+                </div>
 
-            <div class="action-buttons">
-              <button class="action-button">
-                <span>Siguiente</span>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <path d="M9 18l6-6-6-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </button>
+                <div class="form-group">
+                  <label for="organizacion">Organización</label>
+                  <input 
+                    type="text" 
+                    id="organizacion"
+                    class="form-input" 
+                    placeholder="Escribe..."
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="sitio-web">Sitio web</label>
+                  <input 
+                    type="url" 
+                    id="sitio-web"
+                    class="form-input" 
+                    placeholder="Escribe..."
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="pais">País</label>
+                  <input 
+                    type="text" 
+                    id="pais"
+                    class="form-input" 
+                    placeholder="Escribe..."
+                    required
+                  />
+                </div>
+              </div>
               
-              <button class="action-button">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <path d="M12 5V19M5 12H19" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                Subir Datos
-              </button>
-            </div>
-            
-            <p class="helper-text">En base a esta información te puedo ayudar a desarrollar tu proyecto.</p>
+              <div class="form-group full-width">
+                <label for="descripcion">Descripción</label>
+                <textarea
+                  id="descripcion"
+                  class="form-input" 
+                  placeholder="Escribe..."
+                  rows="4"
+                  required
+                ></textarea>
+              </div>
+
+              <div class="action-buttons">
+                <button type="button" class="action-button upload-btn">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 5V19M5 12H19" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  Subir Datos
+                </button>
+                
+                <button type="submit" class="action-button primary">
+                  <span>Guardar</span>
+                </button>
+              </div>
+            </form>
           </div>
         </main>
       </div>
     </div>
 
-    <script>
-      // Script simple para controlar la visualización del sidebar
+    <!-- Scripts -->
+    <script src="auth-utils.js"></script>
+    
+    <script>      // Inicializar la aplicación cuando el DOM esté listo
       document.addEventListener('DOMContentLoaded', function() {
-        const sidebarToggle = document.querySelector('.sidebar-toggle');
-        const sidebar = document.getElementById('sidebar');
+        // Inicializar página con sidebar
+        if (!initializePage({ showSidebar: true })) {
+          return;
+        }
         
-        sidebarToggle.addEventListener('click', function() {
-          sidebar.classList.toggle('collapsed');
-        });
+        // Funcionalidad específica de convocatorias
+        initializeConvocatorias();
       });
+      
+      // Función para inicializar funcionalidad específica
+      function initializeConvocatorias() {
+        const form = document.getElementById('convocatoriaForm');
+        const uploadBtn = document.querySelector('.upload-btn');
+        
+        // Manejar envío del formulario
+        if (form) {
+          form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            handleConvocatoriaSubmit();
+          });
+        }
+        
+        // Manejar botón de subir datos
+        if (uploadBtn) {
+          uploadBtn.addEventListener('click', function() {
+            handleDataUpload();
+          });
+        }
+        
+        // Auto-save draft cada 30 segundos
+        setInterval(saveDraft, 30000);
+        
+        // Cargar draft al iniciar
+        loadDraft();
+      }
+      
+      // Función para manejar el envío del formulario
+      function handleConvocatoriaSubmit() {
+        const formData = {
+          nombreAnteproyecto: document.getElementById('nombre-anteproyecto').value,
+          region: document.getElementById('region').value,
+          fechaCierre: document.getElementById('fecha-cierre').value,
+          organizacion: document.getElementById('organizacion').value,
+          sitioWeb: document.getElementById('sitio-web').value,
+          pais: document.getElementById('pais').value,
+          descripcion: document.getElementById('descripcion').value
+        };
+        
+        // Validar datos
+        if (!validateFormData(formData)) {
+          alert('Por favor, completa todos los campos requeridos.');
+          return;
+        }
+        
+        // Simular envío (aquí iría la llamada a la API)
+        console.log('Datos de convocatoria:', formData);
+        alert('Convocatoria guardada exitosamente!');
+        
+        // Limpiar formulario
+        document.getElementById('convocatoriaForm').reset();
+        
+        // Limpiar draft guardado
+        localStorage.removeItem('convocatoria_draft');
+      }
+      
+      // Función para validar datos del formulario
+      function validateFormData(data) {
+        return data.nombreAnteproyecto && 
+               data.region && 
+               data.fechaCierre && 
+               data.organizacion && 
+               data.pais && 
+               data.descripcion;
+      }
+      
+      // Función para manejar subida de datos
+      function handleDataUpload() {
+        // Crear input file dinámico
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = '.pdf,.doc,.docx,.txt';
+        fileInput.multiple = true;
+        
+        fileInput.addEventListener('change', function(e) {
+          const files = e.target.files;
+          if (files.length > 0) {
+            console.log('Archivos seleccionados:', files);
+            alert(`${files.length} archivo(s) seleccionado(s). Funcionalidad de subida pendiente de implementación.`);
+          }
+        });
+        
+        fileInput.click();
+      }
+      
+      // Función para guardar borrador
+      function saveDraft() {
+        const formData = {
+          nombreAnteproyecto: document.getElementById('nombre-anteproyecto').value,
+          region: document.getElementById('region').value,
+          fechaCierre: document.getElementById('fecha-cierre').value,
+          organizacion: document.getElementById('organizacion').value,
+          sitioWeb: document.getElementById('sitio-web').value,
+          pais: document.getElementById('pais').value,
+          descripcion: document.getElementById('descripcion').value,
+          timestamp: new Date().toISOString()
+        };
+        
+        // Solo guardar si hay algún dato
+        const hasData = Object.values(formData).some(value => value && value.trim());
+        if (hasData) {
+          localStorage.setItem('convocatoria_draft', JSON.stringify(formData));
+          console.log('Borrador guardado automáticamente');
+        }
+      }
+      
+      // Función para cargar borrador
+      function loadDraft() {
+        const draft = localStorage.getItem('convocatoria_draft');
+        if (draft) {
+          try {
+            const data = JSON.parse(draft);
+            
+            // Preguntar al usuario si quiere restaurar
+            if (confirm('Se encontró un borrador guardado. ¿Deseas restaurarlo?')) {
+              document.getElementById('nombre-anteproyecto').value = data.nombreAnteproyecto || '';
+              document.getElementById('region').value = data.region || '';
+              document.getElementById('fecha-cierre').value = data.fechaCierre || '';
+              document.getElementById('organizacion').value = data.organizacion || '';
+              document.getElementById('sitio-web').value = data.sitioWeb || '';
+              document.getElementById('pais').value = data.pais || '';
+              document.getElementById('descripcion').value = data.descripcion || '';
+              
+              console.log('Borrador restaurado');
+            } else {
+              localStorage.removeItem('convocatoria_draft');
+            }
+          } catch (error) {
+            console.error('Error al cargar borrador:', error);
+            localStorage.removeItem('convocatoria_draft');
+          }
+        }
+      }
     </script>
+
+    <style>
+      /* Estilos específicos para convocatorias.html */
+      .back-button {
+        margin-bottom: 16px;
+      }
+      
+      .back-button a {
+        display: inline-flex;
+        align-items: center;
+        color: white;
+        text-decoration: none;
+        padding: 8px;
+        border-radius: 4px;
+        transition: background-color 0.2s;
+      }
+      
+      .back-button a:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+      
+      .page-header {
+        margin-bottom: 32px;
+      }
+      
+      .page-header h1 {
+        text-align: left;
+        margin: 0;
+        font-size: 1.5rem;
+        color: white;
+      }
+      
+      .convocatorias-form {
+        max-width: 800px;
+      }
+      
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        margin-bottom: 24px;
+      }
+      
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      
+      .form-group.full-width {
+        grid-column: 1 / -1;
+        margin-bottom: 24px;
+      }
+      
+      .form-group label {
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: #e0e0e0;
+      }
+      
+      .form-input {
+        background-color: #444;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 16px;
+        color: white;
+        width: 100%;
+        box-sizing: border-box;
+        font-size: 14px;
+        transition: box-shadow 0.2s;
+      }
+      
+      .form-input:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(48, 160, 70, 0.5);
+      }
+      
+      .form-input::placeholder {
+        color: #999;
+      }
+      
+      textarea.form-input {
+        min-height: 100px;
+        resize: vertical;
+        line-height: 1.5;
+      }
+      
+      .action-buttons {
+        display: flex;
+        gap: 16px;
+        margin-top: 32px;
+        justify-content: flex-end;
+      }
+      
+      .action-button {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background-color: #30a046;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 12px 24px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        font-weight: 500;
+      }
+      
+      .action-button:hover {
+        background-color: #278c3b;
+      }
+      
+      .action-button.primary {
+        background-color: #30a046;
+        min-width: 120px;
+        justify-content: center;
+      }
+      
+      .action-button.upload-btn {
+        background-color: transparent;
+        border: 2px solid #30a046;
+      }
+      
+      .action-button.upload-btn:hover {
+        background-color: rgba(48, 160, 70, 0.1);
+      }
+      
+      /* Indicador de borrador guardado */
+      .draft-indicator {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: #30a046;
+        color: white;
+        padding: 8px 12px;
+        border-radius: 4px;
+        font-size: 12px;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+      
+      .draft-indicator.show {
+        opacity: 1;
+      }
+      
+      /* Media queries para responsividad */
+      @media (max-width: 768px) {
+        .form-row {
+          grid-template-columns: 1fr;
+          gap: 16px;
+        }
+        
+        .action-buttons {
+          flex-direction: column-reverse;
+        }
+        
+        .action-button {
+          justify-content: center;
+        }
+        
+        .main-content {
+          padding: 16px;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .convocatorias-form {
+          max-width: 100%;
+        }
+        
+        .form-input {
+          padding: 10px 12px;
+        }
+        
+        .action-buttons {
+          margin-top: 24px;
+        }
+      }
+    </style>
 
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
   </body>

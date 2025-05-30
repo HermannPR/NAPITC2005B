@@ -5,6 +5,7 @@ const imageRest = require('./API/imageRestController');
 const constants = require("../constants");
 const adminRest = require('./API/SAdminRestController');
 const formRest = require('./API/formRestController');
+const chatAIRest = require('./API/chatAIRestController');
 
 
 const router = express.Router();
@@ -40,5 +41,8 @@ router.get(constants.contextURL + constants.apiURL + "/getRegistros/:idUsuario",
 
 //Super admin
 router.get(constants.contextURL + constants.apiURL + "/getUsersNA", usersRest.authenticateTokenSAdmin, adminRest.getUsersNoAceptados);
+
+//Chat AI
+router.post(constants.contextURL + constants.apiURL + "/chat", usersRest.authenticateToken, chatAIRest.processChatMessage);
 
 module.exports = router;

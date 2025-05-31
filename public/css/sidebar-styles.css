@@ -122,12 +122,12 @@
 }
 
 /* =============================================================================
-   BOTÓN DE COLAPSO DEL SIDEBAR
+   BOTÓN DE COLAPSO DEL SIDEBAR - POSICIÓN SUPERIOR DERECHA EXTERNA
    ============================================================================= */
 .sidebar-collapse-btn {
-  position: absolute;
+  position: fixed;
   top: 20px;
-  left: 20px;
+  right: 20px;
   width: 40px;
   height: 40px;
   background-color: #30a046 !important;
@@ -138,9 +138,10 @@
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
-  z-index: 1000 !important;
+  z-index: 1001 !important;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 .sidebar-collapse-btn:hover {
@@ -157,6 +158,43 @@
 /* Cuando el sidebar está colapsado, rotar la flecha */
 .sidebar.collapsed ~ .main-content .sidebar-collapse-btn svg {
   transform: rotate(180deg);
+}
+
+/* BOTÓN DE EXPANSIÓN DEL SIDEBAR - POSICIÓN SUPERIOR DERECHA EXTERNA */
+.sidebar-expand-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  background-color: #30a046 !important;
+  border: 2px solid white !important;
+  border-radius: 8px;
+  cursor: pointer;
+  display: none !important;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 1001 !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.sidebar-expand-btn:hover {
+  background-color: #278c3b !important;
+  transform: scale(1.05);
+}
+
+.sidebar-expand-btn svg {
+  transition: transform 0.3s ease;
+  stroke: white !important;
+  fill: none !important;
+}
+
+/* Mostrar botón de expansión cuando sidebar esté colapsado */
+.sidebar.collapsed ~ .sidebar-expand-btn {
+  display: flex !important;
 }
 
 /* =============================================================================

@@ -5,17 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Asistente de Mi Biomo - Mawi</title>
     <meta name="description" content="Asistente de Mi Biomo" />    <link rel="stylesheet" href="style.css" />
-    <link rel="stylesheet" href="css/sidebar-styles.css" />
-  </head>
-  <body>
-    <div class="mawi-app-container">
-      <header class="mawi-header">
-        <div class="sidebar-toggle" id="sidebarToggle">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M4 6H20M4 12H20M4 18H20" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        
+    <link rel="stylesheet" href="css/sidebar-styles.css" />  </head>
+  <body class="with-sidebar-toggle">
+    <div class="mawi-app-container">      <header class="mawi-header">        
         <div class="logo">
           <img src="eye-icon.svg" alt="Mawi" class="eye-icon" />
           <h2>Mawi</h2>
@@ -27,13 +19,36 @@
             <img src="avatar-placeholder.svg" alt="Usuario" />
           </div>
         </div>
-      </header>
+      </header>      <!-- Overlay para móvil -->
+      <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
       <div class="app-content">
-        <!-- La sidebar se insertará aquí automáticamente -->
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+          <div class="sidebar-content">
+            <nav class="sidebar-nav">
+              <a href="dashboard.html" class="sidebar-item">Inicio</a>
+              <a href="biomo.html" class="sidebar-item active">Asistente de Mi Biomo</a>
+              <a href="explorador.html" class="sidebar-item">Asistente Explorador de Anteproyectos</a>
+              <a href="convocatorias.html" class="sidebar-item">Asistente de Convocatorias</a>
+            </nav>
+            <div class="sidebar-footer">
+              <a href="#" class="support-link">
+                <img src="support-icon.svg" alt="Soporte" />
+                Contacta con el soporte
+              </a>
+            </div>
+          </div>
+        </aside>
 
-        <!-- Main content -->
-        <main class="main-content">
+        <!-- Main content -->        <main class="main-content">          <!-- Botón para colapsar sidebar -->
+          <button class="sidebar-collapse-btn" id="sidebarCollapseBtn">
+            <
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M15 18L9 12L15 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          
           <div class="biomo-header">
             <h1>Asistente de Mi Biomo</h1>
             <p class="biomo-id">Biomo ID: 1234</p>
@@ -504,6 +519,64 @@
         .message {
           max-width: 95%;
         }      }
-    </style>
+    </style>    <script>
+      // Manejo del sidebar colapsable
+      document.addEventListener('DOMContentLoaded', function() {
+        const sidebarCollapseBtn = document.getElementById('sidebarCollapseBtn');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        
+        // Debug: verificar que los elementos existen
+        console.log('sidebarCollapseBtn:', sidebarCollapseBtn);
+        console.log('sidebar:', sidebar);
+        console.log('sidebarOverlay:', sidebarOverlay);
+        
+        if (!sidebarCollapseBtn || !sidebar || !sidebarOverlay) return;
+        
+        // Función para alternar el sidebar
+        function toggleSidebar() {
+          const isCollapsed = sidebar.classList.contains('collapsed');
+          
+          if (isCollapsed) {
+            // Expandir
+            sidebar.classList.remove('collapsed');
+            
+            // En móvil, mostrar overlay
+            if (window.innerWidth <= 768) {
+              sidebarOverlay.classList.add('active');
+            }
+          } else {
+            // Colapsar
+            sidebar.classList.add('collapsed');
+            sidebarOverlay.classList.remove('active');
+          }
+        }
+        
+        // Event listeners
+        sidebarCollapseBtn.addEventListener('click', toggleSidebar);
+        
+        // Cerrar sidebar al hacer clic en el overlay (móvil)
+        sidebarOverlay.addEventListener('click', function() {
+          sidebar.classList.add('collapsed');
+          sidebarOverlay.classList.remove('active');
+        });
+        
+        // Manejar cambios de tamaño de ventana
+        window.addEventListener('resize', function() {
+          if (window.innerWidth > 768) {
+            // En desktop, quitar overlay
+            sidebarOverlay.classList.remove('active');
+          } else if (!sidebar.classList.contains('collapsed')) {
+            // En móvil, mostrar overlay si sidebar está abierto
+            sidebarOverlay.classList.add('active');
+          }
+        });
+        
+        // Inicializar estado del sidebar en móvil
+        if (window.innerWidth <= 768) {
+          sidebar.classList.add('collapsed');
+        }
+      });
+    </script>
   </body>
 </html>

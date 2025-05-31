@@ -4,388 +4,418 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administrador - Mawi</title>
-    <meta name="description" content="Panel de control para administradores">
-    
-    <!-- CSS Imports -->
-    <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/components.css">
-    <link rel="stylesheet" href="css/admin.css">
-    <link rel="stylesheet" href="css/sidebar-styles.css">
-    
+    <link rel="stylesheet" href="style.css">
     <style>
-        /* Loading específico para esta página */
-        .auth-loading {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: var(--bg-dark);
+        /* Estilos específicos para páginas de administrador */
+        .admin-container {
+            width: 100%;
+            min-height: 100vh;
+            background-color: #212121;
+            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        .admin-header {
+            background-color: #1a1a1a;
+            padding: 16px 24px;
+            border-bottom: 1px solid #333;
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .admin-logo h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 500;
+        }
+
+        .admin-nav {
+            background-color: #2a2a2a;
+            padding: 12px 24px;
+            border-bottom: 1px solid #333;
+        }
+
+        .admin-nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 32px;
+        }
+
+        .admin-nav a {
+            color: #ccc;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .admin-nav a:hover {
+            background-color: #444;
+            color: white;
+        }
+
+        .admin-nav a.active {
+            background-color: #30a046;
+            color: white;
+        }
+
+        .admin-content {
+            padding: 32px 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .admin-page-title {
+            margin-bottom: 32px;
+        }
+
+        .admin-page-title h2 {
+            margin: 0 0 8px 0;
+            font-size: 2rem;
+        }
+
+        .admin-page-title p {
+            color: #ccc;
+            margin: 0;
+        }
+
+        .admin-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .admin-card {
+            background-color: #333;
+            border-radius: 8px;
+            padding: 24px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .admin-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .admin-card h3 {
+            margin: 0 0 8px 0;
+            color: #30a046;
+            font-size: 1.2rem;
+        }
+
+        .admin-card p {
+            color: #ccc;
+            margin: 0 0 16px 0;
+            line-height: 1.5;
+        }
+
+        .admin-card .card-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .admin-button {
+            background-color: #30a046;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 16px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .admin-button:hover {
+            background-color: #278c3b;
+        }
+
+        .admin-button.secondary {
+            background-color: #444;
+        }
+
+        .admin-button.secondary:hover {
+            background-color: #555;
+        }
+
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background-color: #2a2a2a;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #30a046;
+            display: block;
+        }
+
+        .stat-label {
+            color: #ccc;
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar-circle {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: #444;
+            display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 1000;
-        }
-        
-        .progress-bar {
-            width: 300px;
-            height: 6px;
-            background-color: var(--bg-input);
-            border-radius: 3px;
-            margin: 20px auto;
             overflow: hidden;
         }
-        
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary-color), var(--primary-hover));
-            width: 0%;
-            transition: width 0.3s ease;
-            border-radius: 3px;
+
+        .logout-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 16px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .logout-btn:hover {
+            background-color: #c82333;
+        }
+
+        @media (max-width: 768px) {
+            .admin-nav ul {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .admin-content {
+                padding: 16px;
+            }
+
+            .admin-cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
     </style>
 </head>
-<body class="with-sidebar-toggle">
-    <!-- Loading Screen -->
-    <div id="loading-screen" class="auth-loading">
-        <div class="admin-loading">
-            <div class="admin-loading-spinner"></div>
-            <h2 class="admin-loading-text">🔐 Verificando permisos de administrador</h2>
-            <p class="admin-loading-subtext" id="loading-message">Iniciando verificación...</p>
-            <div class="progress-bar">
-                <div id="progress-fill" class="progress-fill"></div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Error Screen -->
-    <div id="error-screen" class="admin-container" style="display: none;">
-        <div class="admin-content">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h1>❌ Error de Autenticación</h1>
-                    <p id="error-message" class="text-danger mb-4"></p>
-                    <button onclick="redirectToLogin()" class="btn btn-primary">
-                        Ir al Login
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Main Content -->
-    <div id="main-content" class="mawi-app-container" style="display: none;">
+<body>
+    <div class="admin-container">
         <!-- Header -->
-        <header class="mawi-header">
-            <div class="logo">
-                <img src="eye-icon.svg" alt="Mawi" class="eye-icon" />
-                <h2>MAWI</h2>
+        <header class="admin-header">
+            <div class="admin-logo">
+                <img src="eye-icon.svg" alt="Mawi" style="width: 24px; height: 24px;">
+                <h1>Mawi - Panel de Administrador</h1>
             </div>
             <div class="user-menu">
-                <span id="admin-name">Admin</span>
+                <span id="admin-name">Administrador</span>
                 <div class="avatar-circle">
-                    <i class="fas fa-user"></i>
+                    <img src="avatar-placeholder.svg" alt="Admin">
                 </div>
+                <button class="logout-btn" onclick="logout()">Cerrar Sesión</button>
             </div>
         </header>
 
-        <!-- Sidebar Container -->
-        <div id="sidebar-container"></div>
+        <!-- Navigation -->
+        <nav class="admin-nav">
+            <ul>
+                <li><a href="admin-dashboard.html" class="active">Dashboard</a></li>
+                <li><a href="admin-users.html">Gestión de Usuarios</a></li>
+                <li><a href="admin-registros.html">Registros</a></li>
+                <li><a href="admin-reports.html">Reportes</a></li>
+                <li><a href="admin-settings.html">Configuración</a></li>
+            </ul>
+        </nav>
 
-        <div class="app-content">
-            <main class="main-content">
-                <!-- Welcome Section -->
-                <div class="page-header">
-                    <h1>🛡️ Panel de Administrador</h1>
-                    <p>Bienvenido al Panel de Administración. Selecciona una opción para continuar</p>
+        <!-- Main Content -->
+        <main class="admin-content">
+            <div class="admin-page-title">
+                <h2>Dashboard de Administrador</h2>
+                <p>Resumen general del sistema y estadísticas principales</p>
+            </div>
+
+            <!-- Statistics Cards -->
+            <div class="admin-stats">
+                <div class="stat-card">
+                    <span class="stat-number" id="total-users">0</span>
+                    <div class="stat-label">Usuarios Totales</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="pending-users">0</span>
+                    <div class="stat-label">Usuarios Pendientes</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="total-registros">0</span>
+                    <div class="stat-label">Registros Totales</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="active-forms">7</span>
+                    <div class="stat-label">Tipos de Formularios</div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="admin-cards-grid">
+                <div class="admin-card">
+                    <h3>Gestión de Usuarios</h3>
+                    <p>Administra usuarios, roles y permisos. Revisa solicitudes pendientes y gestiona cuentas activas.</p>
+                    <a href="admin-users.html" class="admin-button">Gestionar Usuarios</a>
                 </div>
 
-                <!-- Stats Overview -->
-                <div class="admin-stats">
-                    <div class="admin-stat-card">
-                        <span class="admin-stat-number" id="total-users">-</span>
-                        <span class="admin-stat-label">Usuarios Totales</span>
-                    </div>
-                    <div class="admin-stat-card">
-                        <span class="admin-stat-number" id="pending-users">-</span>
-                        <span class="admin-stat-label">Usuarios Pendientes</span>
-                    </div>
-                    <div class="admin-stat-card">
-                        <span class="admin-stat-number" id="total-records">-</span>
-                        <span class="admin-stat-label">Registros Totales</span>
-                    </div>
-                    <div class="admin-stat-card">
-                        <span class="admin-stat-number" id="active-users">-</span>
-                        <span class="admin-stat-label">Usuarios Activos</span>
-                    </div>
+                <div class="admin-card">
+                    <h3>Registros de Biodiversidad</h3>
+                    <p>Revisa y administra todos los registros de biodiversidad enviados por los usuarios del sistema.</p>
+                    <a href="admin-registros.html" class="admin-button">Ver Registros</a>
                 </div>
 
-                <!-- Admin Options -->
-                <div class="admin-selector">
-                    <a href="SAaceptarusuarios.html" class="admin-option-card">
-                        <div class="admin-option-icon">
-                            👥
-                        </div>
-                        <h3 class="admin-option-title">Gestión de Usuarios</h3>
-                        <p class="admin-option-description">
-                            Revisar y aprobar usuarios pendientes de activación. 
-                            Gestionar solicitudes de registro y permisos de acceso.
-                        </p>
-                    </a>
-
-                    <a href="AdmUpReguser.html" class="admin-option-card">
-                        <div class="admin-option-icon">
-                            📊
-                        </div>
-                        <h3 class="admin-option-title">Todos los Registros</h3>
-                        <p class="admin-option-description">
-                            Ver todos los usuarios del sistema con sus registros completos. 
-                            Filtrar, buscar y exportar datos de usuarios y biomonitoreo.
-                        </p>
-                    </a>
-
-                    <a href="admin-estadisticas.html" class="admin-option-card">
-                        <div class="admin-option-icon">
-                            📈
-                        </div>
-                        <h3 class="admin-option-title">Estadísticas y Reportes</h3>
-                        <p class="admin-option-description">
-                            Ver métricas del sistema, gráficos de actividad y 
-                            generar reportes administrativos detallados.
-                        </p>
-                    </a>
-
-                    <a href="dashboard.html" class="admin-option-card">
-                        <div class="admin-option-icon">
-                            🏠
-                        </div>
-                        <h3 class="admin-option-title">Dashboard Usuario</h3>
-                        <p class="admin-option-description">
-                            Acceder al dashboard regular de usuario para 
-                            probar funcionalidades y verificar la experiencia.
-                        </p>
-                    </a>
+                <div class="admin-card">
+                    <h3>Reportes y Estadísticas</h3>
+                    <p>Genera reportes detallados y visualiza estadísticas del uso del sistema y datos recopilados.</p>
+                    <a href="admin-reports.html" class="admin-button">Ver Reportes</a>
                 </div>
 
-                <!-- Quick Actions -->
-                <div class="text-center mt-5">
-                    <h3 class="mb-3">Acciones Rápidas</h3>
-                    <div class="d-flex justify-content-center" style="gap: 16px; flex-wrap: wrap;">
-                        <button onclick="refreshStats()" class="btn btn-secondary">
-                            🔄 Actualizar Estadísticas
-                        </button>
-                        <button onclick="exportAllData()" class="btn btn-success">
-                            📥 Exportar Todos los Datos
-                        </button>
-                        <button onclick="showSystemInfo()" class="btn btn-info">
-                            ℹ️ Información del Sistema
-                        </button>
-                    </div>
+                <div class="admin-card">
+                    <h3>Configuración del Sistema</h3>
+                    <p>Configura parámetros del sistema, tipos de formularios y opciones generales de la aplicación.</p>
+                    <a href="admin-settings.html" class="admin-button secondary">Configurar</a>
                 </div>
-            </main>
-        </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="admin-card">
+                <h3>Actividad Reciente</h3>
+                <div id="recent-activity">
+                    <p style="color: #ccc; text-align: center; padding: 20px;">Cargando actividad reciente...</p>
+                </div>
+            </div>
+        </main>
     </div>
 
-    <!-- Include shared authentication utilities -->
-    <script src="auth-utils.js"></script>
     <script>
-        // =================================
-        // FUNCIONES DE AUTENTICACIÓN
-        // =================================
-        async function initializePage() {
+        // Verificar autenticación y rol de administrador
+        function checkAdminAuth() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'login.html';
+                return false;
+            }
+
             try {
-                console.log('🚀 Inicializando panel de administrador...');
-                
-                updateProgress(10, 'Verificando autenticación...');
-                
-                // Use shared auth utilities
-                if (!checkAuthAndRedirect()) {
-                    return;
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                if (payload.rol < 3) { // Debe ser Admin (rol 3) o Super Admin (rol 4)
+                    alert('No tienes permisos para acceder a esta página');
+                    window.location.href = 'login.html';
+                    return false;
                 }
-                
-                updateProgress(30, 'Verificando permisos de administrador...');
-                
-                if (!checkAdminPermissions()) {
-                    return;
-                }
-                
-                updateProgress(50, 'Configurando interfaz...');
-                
-                // Setup header with user info
-                setupHeader();
-                
-                updateProgress(70, 'Cargando estadísticas...');
-                
-                // Load admin stats
-                await loadStats();
-                
-                updateProgress(100, 'Listo');
-                
-                setTimeout(() => {
-                    document.getElementById('loading-screen').style.display = 'none';
-                    document.getElementById('main-content').style.display = 'block';
-                    console.log('✅ Panel de administrador cargado correctamente');
-                }, 500);
 
+                // Mostrar nombre del admin
+                document.getElementById('admin-name').textContent = payload.nombre || 'Administrador';
+                return true;
             } catch (error) {
-                console.error('❌ Error de inicialización:', error);
-                showError(error.message);
+                console.error('Error al verificar token:', error);
+                window.location.href = 'login.html';
+                return false;
             }
         }
 
-        // =================================
-        // FUNCIONES DE UI
-        // =================================
-        function updateProgress(percentage, message) {
-            const progressFill = document.getElementById('progress-fill');
-            const loadingMessage = document.getElementById('loading-message');
-            
-            if (progressFill) {
-                progressFill.style.width = `${percentage}%`;
-            }
-            
-            if (loadingMessage) {
-                loadingMessage.textContent = message;
-            }
-        }
-
-        function showError(message) {
-            document.getElementById('loading-screen').style.display = 'none';
-            document.getElementById('main-content').style.display = 'none';
-            document.getElementById('error-screen').style.display = 'flex';
-            document.getElementById('error-message').textContent = message;
-        }
-
-        // =================================
-        // FUNCIONES DE DATOS
-        // =================================
-        async function loadStats() {
+        // Cargar estadísticas del dashboard
+        async function loadDashboardStats() {
             try {
                 const token = localStorage.getItem('token');
-                if (!token) return;
-
+                
                 // Cargar usuarios
                 const usersResponse = await fetch('/Consultas/api/getusers', {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    }
+                    headers: { 'Authorization': `Bearer ${token}` }
                 });
                 
                 if (usersResponse.ok) {
                     const usersData = await usersResponse.json();
-                    const users = usersData.records || [];
-                    document.getElementById('total-users').textContent = users.length;
-                    document.getElementById('active-users').textContent = 
-                        users.filter(u => u.estado === 'A').length;
-                    
-                    // Calcular total de registros
-                    const totalRecords = users.reduce((sum, user) => 
-                        sum + (parseInt(user.TotalRegistros) || 0), 0);
-                    document.getElementById('total-records').textContent = totalRecords;
+                    document.getElementById('total-users').textContent = usersData.total || 0;
                 }
 
-                // Cargar usuarios pendientes
-                try {
+                // Cargar usuarios pendientes (solo Super Admin)
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                if (payload.rol === 4) {
                     const pendingResponse = await fetch('/Consultas/api/getUsersNA', {
-                        headers: {
-                            'Authorization': `Bearer ${token}`,
-                            'Content-Type': 'application/json'
-                        }
+                        headers: { 'Authorization': `Bearer ${token}` }
                     });
                     
                     if (pendingResponse.ok) {
                         const pendingData = await pendingResponse.json();
-                        document.getElementById('pending-users').textContent = 
-                            pendingData.records?.length || 0;
-                    } else {
-                        document.getElementById('pending-users').textContent = 'N/A';
+                        document.getElementById('pending-users').textContent = pendingData.total || 0;
                     }
-                } catch (e) {
-                    document.getElementById('pending-users').textContent = 'N/A';
                 }
 
             } catch (error) {
                 console.error('Error cargando estadísticas:', error);
-                // Mantener valores por defecto
             }
         }
 
-        // =================================
-        // FUNCIONES DE ACCIONES RÁPIDAS
-        // =================================
-        async function refreshStats() {
-            const btn = event.target;
-            const originalText = btn.textContent;
-            btn.textContent = '🔄 Cargando...';
-            btn.disabled = true;
-            
-            await loadStats();
-            
-            setTimeout(() => {
-                btn.textContent = originalText;
-                btn.disabled = false;
-                alert('✅ Estadísticas actualizadas');
-            }, 1000);
-        }
-
-        function exportAllData() {
-            alert('🚧 Función de exportación en desarrollo.\nPronto podrás exportar todos los datos del sistema.');
-        }
-
-        function showSystemInfo() {
-            const userData = getUserData();
-            const info = `
-📊 INFORMACIÓN DEL SISTEMA
-
-👤 Usuario: ${getUserName()}
-🔑 Rol: ${getRoleDisplayName(getUserRole())} (${getUserRole()})
-📧 Email: ${userData?.email || 'N/A'}
-⏰ Sesión expira: ${userData?.exp ? new Date(userData.exp * 1000).toLocaleString() : 'N/A'}
-
-🌐 Navegador: ${navigator.userAgent.split(' ')[0]}
-📱 Plataforma: ${navigator.platform}
-🕐 Hora actual: ${new Date().toLocaleString()}
-            `;
-            alert(info);
-        }
-
-        function redirectToLogin() {
-            window.location.href = 'login.html';
-        }
-
-        // =================================
-        // EVENTOS
-        // =================================
-        window.addEventListener('DOMContentLoaded', initializePage);
-
-        // Auto-refresh stats cada 5 minutos
-        setInterval(() => {
-            if (localStorage.getItem('token') && document.getElementById('main-content').style.display !== 'none') {
-                loadStats();
+        // Función de logout
+        function logout() {
+            if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+                localStorage.removeItem('token');
+                window.location.href = 'login.html';
             }
-        }, 300000);
+        }
 
-        // Verificar expiración de token cada minuto
-        setInterval(() => {
-            const userData = getUserData();
-            if (userData && userData.exp) {
-                const timeLeft = userData.exp - (Date.now() / 1000);
-                if (timeLeft < 300 && timeLeft > 0) { // 5 minutos antes
-                    alert('⚠️ Tu sesión expirará en menos de 5 minutos. Guarda tu trabajo.');
-                }
+        // Cargar actividad reciente (simulada)
+        function loadRecentActivity() {
+            const activities = [
+                'Nuevo usuario registrado: Juan Pérez',
+                'Registro de fauna enviado por María González',
+                'Usuario activado: Carlos Ruiz',
+                'Nuevo formulario de vegetación completado',
+                'Registro de cámaras trampa actualizado'
+            ];
+
+            const activityHtml = activities.map(activity => 
+                `<div style="padding: 8px 0; border-bottom: 1px solid #444; color: #ccc;">
+                    <span style="color: #30a046;">•</span> ${activity}
+                    <small style="color: #888; float: right;">Hace ${Math.floor(Math.random() * 60)} min</small>
+                </div>`
+            ).join('');
+
+            document.getElementById('recent-activity').innerHTML = activityHtml;
+        }
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            if (checkAdminAuth()) {
+                loadDashboardStats();
+                loadRecentActivity();
             }
-        }, 60000);
-    </script>
-
-    <!-- Sidebar modular -->
-    <script src="sidebar.js"></script>
-    <script>
-        // Initialize sidebar after DOM is loaded
-        window.addEventListener('DOMContentLoaded', function() {
-            // Initialize sidebar modular
-            initMawiSidebar('admin');
         });
     </script>
 </body>

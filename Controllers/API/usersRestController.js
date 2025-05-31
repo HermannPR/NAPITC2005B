@@ -18,14 +18,14 @@ async function execLogin(req, res) {
     const estado = result.rows[0].estado;
     const rol = result.rows[0].rol;
 
-    const user = await hashService.isValidUser(email, password);
+        const user = await hashService.isValidUser(email, password);
     if (!user) {
         return res.status(401).json({message: 'Invalid credentials'});
     }
         const token = jwt.sign(
         {id: user.id, email: user.email, nombre: user.nombre, rol: rol},
         SECRET,
-        {   expiresIn: '1h' }
+        {   expiresIn: '24h' }
     );
     return res.json({  token, rol, estado });
 }
@@ -38,33 +38,21 @@ async function execLogin(req, res) {
  * @returns accesos no autorizados
  */    async function authenticateToken(req, res, next)
     {
-        console.log('🔐 DEBUG: authenticateToken called');
-        console.log('Headers:', req.headers);
-        
         let token = null;
         const authHeader = req.headers['authorization'];
         if(authHeader && authHeader.startsWith('Bearer ')){
             token = authHeader.split(' ')[1];
-            console.log('✅ Token found in Authorization header');
         } else if (req.query && req.query.token){
             token = req.query.token;
-            console.log('✅ Token found in query params');
         }
 
         if(!token) {
-            console.log('❌ No token found - returning 401');
             return res.sendStatus(401);
-        }
-        
-        console.log('🔑 Token to verify:', token.substring(0, 20) + '...');
-        console.log('🔐 SECRET:', SECRET);
-        
+        }        
         jwt.verify(token, SECRET, (err, user) => {
             if (err) {
-                console.log('❌ JWT verification failed:', err.message);
                 return res.sendStatus(403);
             }
-            console.log('✅ JWT verification successful, user:', user);
             req.user = user;
             next();
         });

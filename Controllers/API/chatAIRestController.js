@@ -7,11 +7,11 @@ const url = require('url');
 require('dotenv').config();
 
 const AI_CONFIG = {
-  // USAR TU API ORIGINAL QUE FUNCIONA
-  API_ENDPOINT: process.env.AI_API_ENDPOINT || "http://10.14.255.61/v1/chat/completions",
-  API_KEY: process.env.AI_API_KEY || "sk-mDmOn2bG9Z3GDNW-x8wdeQ",
-  MODEL: process.env.AI_MODEL || "gpt-3.5-turbo",
-  USE_MOCK_RESPONSES: false // USAR IA REAL - ASEGURADO
+  // GROQ API - RÁPIDA Y CONFIABLE
+  API_ENDPOINT: process.env.AI_API_ENDPOINT || "https://api.groq.com/openai/v1/chat/completions",
+  API_KEY: process.env.AI_API_KEY || "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",
+  MODEL: process.env.AI_MODEL || "meta-llama/llama-4-scout-17b-16e-instruct",
+  USE_MOCK_RESPONSES: false // USAR IA REAL DE GROQ
 };
 
 /**

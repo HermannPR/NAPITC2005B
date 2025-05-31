@@ -10,9 +10,8 @@
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/admin.css">
-    <link rel="stylesheet" href="css/sidebar-styles.css">
 </head>
-<body class="with-sidebar-toggle">
+<body>
     <!-- Loading Screen -->
     <div id="loading-screen" class="admin-loading" style="display: none;">
         <div class="admin-loading-spinner"></div>
@@ -20,146 +19,137 @@
         <p class="admin-loading-subtext">Obteniendo datos del sistema...</p>
     </div>
 
-    <div class="mawi-app-container">
+    <!-- Main Content -->
+    <div class="admin-container">
         <!-- Header -->
-        <header class="mawi-header">
-            <div class="logo">
-                <img src="eye-icon.svg" alt="Mawi" class="eye-icon" />
-                <h2>MAWI</h2>
+        <header class="admin-header">
+            <div class="admin-title">
+                <h1>👥 Gestión de Usuarios</h1>
             </div>
-            <div class="user-menu">
-                <span id="admin-name" class="user-name">Administrador</span>
-                <div class="avatar-circle">
-                    <i class="fas fa-user-shield"></i>
-                </div>
+            <div class="admin-user-info">
+                <span id="admin-name">Administrador</span>
+                <span class="admin-role-badge">Admin</span>
+                <a href="Adminindex.html" class="btn btn-sm btn-secondary">
+                    ← Volver al Panel
+                </a>
             </div>
         </header>
 
-        <!-- Sidebar Container -->
-        <div id="sidebar-container"></div>
-
-        <div class="app-content">
-            <main class="main-content">
-                <!-- Page Header -->
-                <div class="page-header">
-                    <h1>👥 Gestión de Usuarios</h1>
-                    <p>Administrar usuarios del sistema de biomonitoreo</p>
+        <!-- Content -->
+        <main class="admin-content">
+            <!-- Stats Summary -->
+            <div class="admin-stats mb-4">
+                <div class="admin-stat-card">
+                    <span class="admin-stat-number" id="total-users">0</span>
+                    <span class="admin-stat-label">Total Usuarios</span>
                 </div>
-
-                <!-- Stats Summary -->
-                <div class="admin-stats mb-4">
-                    <div class="admin-stat-card">
-                        <span class="admin-stat-number" id="total-users">0</span>
-                        <span class="admin-stat-label">Total Usuarios</span>
-                    </div>
-                    <div class="admin-stat-card">
-                        <span class="admin-stat-number" id="active-users">0</span>
-                        <span class="admin-stat-label">Usuarios Activos</span>
-                    </div>
-                    <div class="admin-stat-card">
-                        <span class="admin-stat-number" id="users-with-records">0</span>
-                        <span class="admin-stat-label">Con Registros</span>
-                    </div>
-                    <div class="admin-stat-card">
-                        <span class="admin-stat-number" id="total-records">0</span>
-                        <span class="admin-stat-label">Total Registros</span>
-                    </div>
+                <div class="admin-stat-card">
+                    <span class="admin-stat-number" id="active-users">0</span>
+                    <span class="admin-stat-label">Usuarios Activos</span>
                 </div>
-
-                <!-- Filters and Actions -->
-                <div class="admin-filters">
-                    <div class="admin-filter-group">
-                        <label class="admin-filter-label">Buscar Usuario</label>
-                        <input type="text" id="filter-search" class="admin-filter-input" placeholder="Nombre, apellido o email...">
-                    </div>
-                    
-                    <div class="admin-filter-group">
-                        <label class="admin-filter-label">Estado</label>
-                        <select id="filter-estado" class="admin-filter-input">
-                            <option value="">Todos los estados</option>
-                            <option value="A" selected>Activos (A)</option>
-                            <option value="P">Pendientes (P)</option>
-                            <option value="I">Inactivos (I)</option>
-                        </select>
-                    </div>
-                    
-                    <div class="admin-filter-group">
-                        <label class="admin-filter-label">Rol</label>
-                        <select id="filter-rol" class="admin-filter-input">
-                            <option value="">Todos los roles</option>
-                            <option value="1">Usuario (1)</option>
-                            <option value="2">Biomonitor (2)</option>
-                            <option value="3">Administrador (3)</option>
-                            <option value="4">Super Admin (4)</option>
-                        </select>
-                    </div>
-                    
-                    <div class="admin-filter-actions">
-                        <button onclick="applyFilters()" class="btn btn-primary btn-sm">
-                            🔍 Filtrar
-                        </button>
-                        <button onclick="clearFilters()" class="btn btn-secondary btn-sm">
-                            🗑️ Limpiar
-                        </button>
-                        <button onclick="refreshData()" class="btn btn-success btn-sm">
-                            🔄 Actualizar
-                        </button>
-                    </div>
+                <div class="admin-stat-card">
+                    <span class="admin-stat-number" id="users-with-records">0</span>
+                    <span class="admin-stat-label">Con Registros</span>
                 </div>
-
-                <!-- Results Info -->
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div>
-                        <span class="text-secondary">Mostrando </span>
-                        <span id="showing-count">0</span>
-                        <span class="text-secondary"> usuarios</span>
-                    </div>
-                    <div>
-                        <button onclick="exportUsers()" class="btn btn-success btn-sm">
-                            📥 Exportar CSV
-                        </button>
-                    </div>
+                <div class="admin-stat-card">
+                    <span class="admin-stat-number" id="total-records">0</span>
+                    <span class="admin-stat-label">Total Registros</span>
                 </div>
+            </div>
 
-                <!-- Users Table -->
-                <div class="admin-table-container">
-                    <table class="admin-table">
-                        <thead>
-                            <tr>
-                                <th onclick="sortTable('idUsuario')">
-                                    ID <span class="sort-indicator" data-column="idUsuario">↕️</span>
-                                </th>
-                                <th onclick="sortTable('Nombre')">
-                                    Nombre <span class="sort-indicator" data-column="Nombre">↕️</span>
-                                </th>
-                                <th onclick="sortTable('email')">
-                                    Email <span class="sort-indicator" data-column="email">↕️</span>
-                                </th>
-                                <th onclick="sortTable('rol')">
-                                    Rol <span class="sort-indicator" data-column="rol">↕️</span>
-                                </th>
-                                <th onclick="sortTable('estado')">
-                                    Estado <span class="sort-indicator" data-column="estado">↕️</span>
-                                </th>
-                                <th onclick="sortTable('TotalRegistros')">
-                                    Registros <span class="sort-indicator" data-column="TotalRegistros">↕️</span>
-                                </th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="user-table-body">
-                            <!-- Los usuarios se cargarán aquí -->
-                        </tbody>
-                    </table>
+            <!-- Filters and Actions -->
+            <div class="admin-filters">
+                <div class="admin-filter-group">
+                    <label class="admin-filter-label">Buscar Usuario</label>
+                    <input type="text" id="filter-search" class="admin-filter-input" placeholder="Nombre, apellido o email...">
                 </div>
+                
+                <div class="admin-filter-group">
+                    <label class="admin-filter-label">Estado</label>
+                    <select id="filter-estado" class="admin-filter-input">
+                        <option value="">Todos los estados</option>
+                        <option value="A" selected>Activos (A)</option>
+                        <option value="P">Pendientes (P)</option>
+                        <option value="I">Inactivos (I)</option>
+                    </select>
+                </div>
+                
+                <div class="admin-filter-group">
+                    <label class="admin-filter-label">Rol</label>
+                    <select id="filter-rol" class="admin-filter-input">
+                        <option value="">Todos los roles</option>
+                        <option value="1">Usuario (1)</option>
+                        <option value="2">Biomonitor (2)</option>
+                        <option value="3">Administrador (3)</option>
+                        <option value="4">Super Admin (4)</option>
+                    </select>
+                </div>
+                
+                <div class="admin-filter-actions">
+                    <button onclick="applyFilters()" class="btn btn-primary btn-sm">
+                        🔍 Filtrar
+                    </button>
+                    <button onclick="clearFilters()" class="btn btn-secondary btn-sm">
+                        🗑️ Limpiar
+                    </button>
+                    <button onclick="refreshData()" class="btn btn-success btn-sm">
+                        🔄 Actualizar
+                    </button>
+                </div>
+            </div>
 
-                <!-- No Results Message -->
-                <div id="no-results" class="text-center p-5" style="display: none;">
-                    <h3>👤 No se encontraron usuarios</h3>
-                    <p class="text-secondary">Intenta ajustar los filtros para obtener mejores resultados.</p>
+            <!-- Results Info -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <span class="text-secondary">Mostrando </span>
+                    <span id="showing-count">0</span>
+                    <span class="text-secondary"> usuarios</span>
                 </div>
-            </main>
-        </div>
+                <div>
+                    <button onclick="exportUsers()" class="btn btn-success btn-sm">
+                        📥 Exportar CSV
+                    </button>
+                </div>
+            </div>
+
+            <!-- Users Table -->
+            <div class="admin-table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th onclick="sortTable('idUsuario')">
+                                ID <span class="sort-indicator" data-column="idUsuario">↕️</span>
+                            </th>
+                            <th onclick="sortTable('Nombre')">
+                                Nombre <span class="sort-indicator" data-column="Nombre">↕️</span>
+                            </th>
+                            <th onclick="sortTable('email')">
+                                Email <span class="sort-indicator" data-column="email">↕️</span>
+                            </th>
+                            <th onclick="sortTable('rol')">
+                                Rol <span class="sort-indicator" data-column="rol">↕️</span>
+                            </th>
+                            <th onclick="sortTable('estado')">
+                                Estado <span class="sort-indicator" data-column="estado">↕️</span>
+                            </th>
+                            <th onclick="sortTable('TotalRegistros')">
+                                Registros <span class="sort-indicator" data-column="TotalRegistros">↕️</span>
+                            </th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="user-table-body">
+                        <!-- Los usuarios se cargarán aquí -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- No Results Message -->
+            <div id="no-results" class="text-center p-5" style="display: none;">
+                <h3>👤 No se encontraron usuarios</h3>
+                <p class="text-secondary">Intenta ajustar los filtros para obtener mejores resultados.</p>
+            </div>
+        </main>
     </div>
 
     <!-- Modal para ver registros del usuario -->
@@ -207,47 +197,28 @@
                     </div>
                 </form>
             </div>
-        </div>
-    </div>
+        </div>    </div>
 
     <!-- Include shared authentication utilities -->
     <script src="auth-utils.js"></script>
-    <script src="sidebar.js"></script>
-    <script>
-        // =================================
+    <script>        // =================================
         // VARIABLES GLOBALES
         // =================================
         let allUsers = [];
         let filteredUsers = [];
         let currentSort = { column: 'idUsuario', direction: 'asc' };
-        let currentEditUserId = null;
-
-        // =================================
+        let currentEditUserId = null;// =================================
         // INICIALIZACIÓN
         // =================================
         async function initializePage() {
             console.log('🚀 Inicializando gestión de usuarios...');
             
+            // Use shared auth utilities
+            if (!initializeAuth(true)) {
+                return;
+            }
+            
             try {
-                // Inicializar sidebar unificado
-                initMawiSidebar('admin');
-                
-                // Use shared auth utilities
-                if (!checkAuthAndRedirect()) {
-                    return;
-                }
-                
-                // Verificar rol de administrador
-                const userRole = getUserRole();
-                if (userRole < 3) {
-                    alert('❌ Acceso denegado. Se requieren permisos de administrador.');
-                    window.location.href = 'dashboard.html';
-                    return;
-                }
-                
-                // Setup header
-                setupUserHeader();
-                
                 // Load users
                 await loadUsuarios();
                 
@@ -261,11 +232,11 @@
         }
 
         // =================================
-        // CARGA DE DATOS
+        // CARGA DE DATOS (mantenemos la lógica original)
         // =================================
         async function loadUsuarios() {
             showLoading(true);
-            try {
+              try {
                 const token = localStorage.getItem('token');
                 const response = await fetch('/Consultas/api/getusers', {
                     method: 'GET',
@@ -503,15 +474,28 @@
         }
 
         // =================================
-        // ACCIONES DE USUARIO
+        // ACCIONES DE USUARIO (mantenemos lógica original + mejoras)
         // =================================
         async function toggleUserRegistros(userId, userName) {
+            const registrosRow = document.getElementById(`registros-row-${userId}`);
+
+            if(registrosRow && registrosRow.classList.contains('show')) {
+                registrosRow.classList.remove('show');
+                return;
+            }
+
+            // Cerrar otros registros abiertos
+            document.querySelectorAll('.registros-row.show').forEach(row => {
+                row.classList.remove('show');
+            });
+
+            // Mostrar modal en lugar de desplegable
             await viewUserRegistros(userId, userName);
         }
 
         async function viewUserRegistros(userId, userName) {
             showLoading(true);
-            try {
+              try {
                 const token = localStorage.getItem('token');
                 const response = await fetch(`/Consultas/api/getRegistros/${userId}`, {
                     method: 'GET',
@@ -727,5 +711,273 @@
             };
         }
     </script>
-</body>
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        
+        /* ✅ Estilos para filas clickeables */
+        .user-row { cursor: pointer; }
+        .user-row:hover { background-color: #f5f5f5; }
+        
+        /* ✅ Estilos para el menú desplegable */
+        .registros-row {
+            display: none;
+            background-color: #f8f9fa;
+        }
+        
+        .registros-row.show {
+            display: table-row;
+        }
+        
+        .registros-content {
+            padding: 15px;
+            border: 2px solid #007bff;
+            border-radius: 5px;
+            background-color: white;
+        }
+        
+        .registros-title {
+            color: #007bff;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .registros-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        .registros-table th,
+        .registros-table td {
+            border: 1px solid #dee2e6;
+            padding: 6px;
+            text-align: left;
+            font-size: 14px;
+        }
+        
+        .registros-table th {
+            background-color: #e9ecef;
+        }
+        
+        .collapse-btn {
+            float: right;
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+        
+        .collapse-btn:hover {
+            background: #c82333;
+        }
+        
+        .loading {
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+        }
+    </style>
+    </head>
+    <body>
+        <h1>Gestión de Usuarios</h1>
+        <table>
+            <thead onclick="loadUsuarios()">
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Correo electronico</th>
+                    <th>Role</th>
+                    <th>Estado</th>
+                    <th>Total Registros</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="user-table-body">
+            </tbody>
+        </table>
+        
+        <script>
+            async function loadUsuarios() {
+                try {
+                    const token = localStorage.getItem('token');
+                    if (!token) {
+                        console.error('No token found in localStorage');
+                        return;
+                    }
+
+                    const response = await fetch('/Consultas/api/getusers', {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    console.log('Response status:', response.status);
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    console.log('Response data:', data);
+
+                    const users = data.records || [];
+                    console.log('Users:', users);
+
+                    const tbody = document.getElementById('user-table-body');
+                    tbody.innerHTML = '';
+                    
+                    users.forEach(user => {
+                        const userRow = document.createElement('tr');
+                        const userId = user.idUsuario;
+                        userRow.className = 'user-row';
+                        userRow.id = `user-row-${userId}`;
+
+                        userRow.onclick = () => toggleUserRegistros(userId, `${user.Nombre} ${user.Apellidos}`);
+                        userRow.innerHTML = `
+                            <td>${user.idUsuario}</td>
+                            <td>${user.Nombre} ${user.Apellidos}</td>
+                            <td>${user.email}</td>
+                            <td>${user.rol}</td>
+                            <td>${user.estado}</td>
+                            <td>${user.TotalRegistros}</td>
+                            <td onclick="event.stopPropagation()">
+                                <button onclick="editUser(${userId})">Aceptar</button>
+                                <button onclick="deleteUser(${userId})">Rechazar</button>
+                            </td>
+                        `;
+                        tbody.appendChild(userRow);
+
+                        const registrosRow = document.createElement('tr');
+                        registrosRow.className = 'registros-row';
+                        registrosRow.id = `registros-row-${userId}`;
+
+                        registrosRow.innerHTML = `
+                            <td colspan="7">
+                                <div class="registros-content">
+                                    <div class="registros-title">
+                                        Registros de ${user.Nombre} ${user.Apellidos}
+                                        <button class="collapse-btn" onclick="collapseRegistros(${userId})">-</button>
+                                    </div>
+                                    <div id="registros-content-${userId}" class="loading">
+                                        Cargando registros...
+                                    </div>
+                                </div>
+                            </td>
+                        `;
+                        tbody.appendChild(registrosRow);
+                    });
+                } catch (error) {
+                    console.error('Error loading users:', error);
+                }
+            }
+
+            async function toggleUserRegistros(userId, username) {
+                const registrosRow = document.getElementById(`registros-row-${userId}`);
+
+                if(registrosRow.classList.contains('show')) {
+                    registrosRow.classList.remove('show');
+                    return;
+                }
+
+                document.querySelectorAll('.registros-row.show').forEach(row => {
+                    row.classList.remove('show');
+                });
+
+                registrosRow.classList.add('show');
+                const contentDiv = document.getElementById(`registros-content-${userId}`);
+                if(contentDiv.classList.contains('loading')) {
+                    await loadUserRegistros(userId, contentDiv);
+                }
+            }
+
+            async function loadUserRegistros(userId, contentDiv) {
+                try {
+                    const token = localStorage.getItem('token');
+
+                    if (!token) {
+                        console.error('No token found in localStorage');
+                        return;
+                    }
+                    const response = await fetch(`/Consultas/api/getRegistros/${userId}`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if(!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    console.log('Response data:', data);
+
+                    const registros = data.records || [];
+                    contentDiv.classList.remove('loading');
+
+                    if(registros.length === 0) {
+                        contentDiv.innerHTML = `<p>No hay registros para este usuario.</p>`;
+                        return;
+                    }
+
+                    let tableHTML = `
+                        <table class="registros-table">
+                            <thead>
+                                <tr>
+                                    <th>ID Registro</th>
+                                    <th>estado Tiempo</th>
+                                    <th>estacion</th>
+                                    <th>Tipo de registro</th>
+                                    <th>id Creador</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+
+                    registros.forEach(registro => {
+                        tableHTML += `
+                        <tr>
+                            <td>${registro.idFormIn}</td>
+                            <td>${registro.estadoTiempo}</td>
+                            <td>${registro.estacion}</td>
+                            <td>${registro.tipoRegistro}</td>
+                            <td>${registro.idCreador}</td>
+                        </tr>
+                        `;
+                    });
+
+                    tableHTML += `
+                    </tbody>
+                    </table>
+                    <p style="text-align: center; margin-top: 10px;">
+                        Total: ${registros.length} registro(s)
+                    </p>
+                    `;
+
+                    contentDiv.innerHTML = tableHTML;
+                }
+                catch(error){
+                    console.error('Error loading user registros:', error);
+                    contentDiv.classList.remove('loading');
+                    contentDiv.innerHTML = `<p>Error cargando registros: ${error.message}</p>`;
+                }
+            }
+
+            function collapseRegistros(userId) {
+                const registrosRow = document.getElementById(`registros-row-${userId}`);
+                registrosRow.classList.remove('show');
+            }
+
+            function editUser(userId) {
+                console.log(`Edit user with ID: ${userId}`);
+            }
+          </script>
+    </body>
 </html>

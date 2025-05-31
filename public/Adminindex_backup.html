@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administrador - Mawi</title>
-    <meta name="description" content="Panel de control para administradores">
-    
-    <!-- CSS Imports -->
+    <meta name="description" content="Panel de control para administradores">    <!-- CSS Imports -->
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/admin.css">
@@ -72,9 +70,7 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- Main Content -->
+    </div>    <!-- Main Content -->
     <div id="main-content" class="mawi-app-container" style="display: none;">
         <!-- Header -->
         <header class="mawi-header">
@@ -95,101 +91,98 @@
 
         <div class="app-content">
             <main class="main-content">
-                <!-- Welcome Section -->
-                <div class="page-header">
-                    <h1>🛡️ Panel de Administrador</h1>
-                    <p>Bienvenido al Panel de Administración. Selecciona una opción para continuar</p>
-                </div>
-
-                <!-- Stats Overview -->
-                <div class="admin-stats">
-                    <div class="admin-stat-card">
-                        <span class="admin-stat-number" id="total-users">-</span>
-                        <span class="admin-stat-label">Usuarios Totales</span>
-                    </div>
-                    <div class="admin-stat-card">
-                        <span class="admin-stat-number" id="pending-users">-</span>
-                        <span class="admin-stat-label">Usuarios Pendientes</span>
-                    </div>
-                    <div class="admin-stat-card">
-                        <span class="admin-stat-number" id="total-records">-</span>
-                        <span class="admin-stat-label">Registros Totales</span>
-                    </div>
-                    <div class="admin-stat-card">
-                        <span class="admin-stat-number" id="active-users">-</span>
-                        <span class="admin-stat-label">Usuarios Activos</span>
-                    </div>
-                </div>
-
-                <!-- Admin Options -->
-                <div class="admin-selector">
-                    <a href="SAaceptarusuarios.html" class="admin-option-card">
-                        <div class="admin-option-icon">
-                            👥
+                <div class="admin-container">
+                    <!-- Content -->                    <main class="admin-content">
+                        <!-- Welcome Section -->
+                        <div class="page-header">
+                            <h1>🛡️ Panel de Administrador</h1>
+                            <p>Bienvenido al Panel de Administración. Selecciona una opción para continuar</p>
                         </div>
-                        <h3 class="admin-option-title">Gestión de Usuarios</h3>
-                        <p class="admin-option-description">
-                            Revisar y aprobar usuarios pendientes de activación. 
-                            Gestionar solicitudes de registro y permisos de acceso.
-                        </p>
-                    </a>
 
-                    <a href="AdmUpReguser.html" class="admin-option-card">
-                        <div class="admin-option-icon">
-                            📊
-                        </div>
-                        <h3 class="admin-option-title">Todos los Registros</h3>
-                        <p class="admin-option-description">
-                            Ver todos los usuarios del sistema con sus registros completos. 
-                            Filtrar, buscar y exportar datos de usuarios y biomonitoreo.
-                        </p>
-                    </a>
-
-                    <a href="admin-estadisticas.html" class="admin-option-card">
-                        <div class="admin-option-icon">
-                            📈
-                        </div>
-                        <h3 class="admin-option-title">Estadísticas y Reportes</h3>
-                        <p class="admin-option-description">
-                            Ver métricas del sistema, gráficos de actividad y 
-                            generar reportes administrativos detallados.
-                        </p>
-                    </a>
-
-                    <a href="dashboard.html" class="admin-option-card">
-                        <div class="admin-option-icon">
-                            🏠
-                        </div>
-                        <h3 class="admin-option-title">Dashboard Usuario</h3>
-                        <p class="admin-option-description">
-                            Acceder al dashboard regular de usuario para 
-                            probar funcionalidades y verificar la experiencia.
-                        </p>
-                    </a>
+            <!-- Stats Overview -->
+            <div class="admin-stats">
+                <div class="admin-stat-card">
+                    <span class="admin-stat-number" id="total-users">-</span>
+                    <span class="admin-stat-label">Usuarios Totales</span>
                 </div>
-
-                <!-- Quick Actions -->
-                <div class="text-center mt-5">
-                    <h3 class="mb-3">Acciones Rápidas</h3>
-                    <div class="d-flex justify-content-center" style="gap: 16px; flex-wrap: wrap;">
-                        <button onclick="refreshStats()" class="btn btn-secondary">
-                            🔄 Actualizar Estadísticas
-                        </button>
-                        <button onclick="exportAllData()" class="btn btn-success">
-                            📥 Exportar Todos los Datos
-                        </button>
-                        <button onclick="showSystemInfo()" class="btn btn-info">
-                            ℹ️ Información del Sistema
-                        </button>
+                <div class="admin-stat-card">
+                    <span class="admin-stat-number" id="pending-users">-</span>
+                    <span class="admin-stat-label">Usuarios Pendientes</span>
+                </div>
+                <div class="admin-stat-card">
+                    <span class="admin-stat-number" id="total-records">-</span>
+                    <span class="admin-stat-label">Registros Totales</span>
+                </div>
+                <div class="admin-stat-card">
+                    <span class="admin-stat-number" id="active-users">-</span>
+                    <span class="admin-stat-label">Usuarios Activos</span>
+                </div>
+            </div>            <!-- Admin Options -->
+            <div class="admin-selector">
+                <a href="SAaceptarusuarios.html" class="admin-option-card">
+                    <div class="admin-option-icon">
+                        👥
                     </div>
+                    <h3 class="admin-option-title">Gestión de Usuarios</h3>
+                    <p class="admin-option-description">
+                        Revisar y aprobar usuarios pendientes de activación. 
+                        Gestionar solicitudes de registro y permisos de acceso.
+                    </p>
+                </a>
+
+                <a href="AdmUpReguser.html" class="admin-option-card">
+                    <div class="admin-option-icon">
+                        📊
+                    </div>
+                    <h3 class="admin-option-title">Todos los Registros</h3>
+                    <p class="admin-option-description">
+                        Ver todos los usuarios del sistema con sus registros completos. 
+                        Filtrar, buscar y exportar datos de usuarios y biomonitoreo.
+                    </p>
+                </a>
+
+                <a href="admin-estadisticas.html" class="admin-option-card">
+                    <div class="admin-option-icon">
+                        📈
+                    </div>
+                    <h3 class="admin-option-title">Estadísticas y Reportes</h3>
+                    <p class="admin-option-description">
+                        Ver métricas del sistema, gráficos de actividad y 
+                        generar reportes administrativos detallados.
+                    </p>
+                </a>
+
+                <a href="dashboard.html" class="admin-option-card">
+                    <div class="admin-option-icon">
+                        🏠
+                    </div>
+                    <h3 class="admin-option-title">Dashboard Usuario</h3>
+                    <p class="admin-option-description">
+                        Acceder al dashboard regular de usuario para 
+                        probar funcionalidades y verificar la experiencia.
+                    </p>
+                </a>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="text-center mt-5">
+                <h3 class="mb-3">Acciones Rápidas</h3>
+                <div class="d-flex justify-content-center" style="gap: 16px; flex-wrap: wrap;">
+                    <button onclick="refreshStats()" class="btn btn-secondary">
+                        🔄 Actualizar Estadísticas
+                    </button>
+                    <button onclick="exportAllData()" class="btn btn-success">
+                        📥 Exportar Todos los Datos
+                    </button>
+                    <button onclick="showSystemInfo()" class="btn btn-info">
+                        ℹ️ Información del Sistema
+                    </button>
                 </div>
-            </main>
-        </div>
-    </div>
+            </div>
+        </main>    </div>
 
     <!-- Include shared authentication utilities -->
-    <script src="auth-utils.js"></script>
-    <script>
+    <script src="auth-utils.js"></script>    <script>
         // =================================
         // FUNCIONES DE AUTENTICACIÓN
         // =================================
@@ -232,9 +225,7 @@
                 console.error('❌ Error de inicialización:', error);
                 showError(error.message);
             }
-        }
-
-        // =================================
+        }// =================================
         // FUNCIONES DE UI
         // =================================
         function updateProgress(percentage, message) {
@@ -332,9 +323,7 @@
 
         function exportAllData() {
             alert('🚧 Función de exportación en desarrollo.\nPronto podrás exportar todos los datos del sistema.');
-        }
-
-        function showSystemInfo() {
+        }        function showSystemInfo() {
             const userData = getUserData();
             const info = `
 📊 INFORMACIÓN DEL SISTEMA
@@ -349,9 +338,7 @@
 🕐 Hora actual: ${new Date().toLocaleString()}
             `;
             alert(info);
-        }
-
-        function redirectToLogin() {
+        }        function redirectToLogin() {
             window.location.href = 'login.html';
         }
 
@@ -375,8 +362,7 @@
                 if (timeLeft < 300 && timeLeft > 0) { // 5 minutos antes
                     alert('⚠️ Tu sesión expirará en menos de 5 minutos. Guarda tu trabajo.');
                 }
-            }
-        }, 60000);
+            }        }, 60000);
     </script>
 
     <!-- Sidebar modular -->

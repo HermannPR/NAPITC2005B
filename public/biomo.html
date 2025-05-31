@@ -1,582 +1,211 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Asistente de Mi Biomo - Mawi</title>
-    <meta name="description" content="Asistente de Mi Biomo" />    <link rel="stylesheet" href="style.css" />
-    <link rel="stylesheet" href="css/sidebar-styles.css" />  </head>
-  <body class="with-sidebar-toggle">
-    <div class="mawi-app-container">      <header class="mawi-header">        
-        <div class="logo">
-          <img src="eye-icon.svg" alt="Mawi" class="eye-icon" />
-          <h2>Mawi</h2>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Asistente de Mi Biomo - Mawi</title>
+  <meta name="description" content="Asistente de Mi Biomo" />  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="css/sidebar-styles.css" />
+  <link rel="stylesheet" href="css/chat-styles.css" />
+</head>
+<body class="with-sidebar-toggle">
+  <div class="mawi-app-container">
+    <header class="mawi-header">
+      <div class="logo">
+        <img src="eye-icon.svg" alt="Mawi" class="eye-icon" />
+        <h2>Mawi</h2>
+      </div>
+      
+      <div class="user-menu">
+        <span id="userName">EcoRanger</span>
+        <div class="avatar-circle">
+          <img src="avatar-placeholder.svg" alt="Usuario" />
         </div>
-        
-        <div class="user-menu">
-          <span id="userName">EcoRanger</span>
-          <div class="avatar-circle">
-            <img src="avatar-placeholder.svg" alt="Usuario" />
-          </div>
-        </div>
-      </header>      <!-- Overlay para móvil -->
-      <div class="sidebar-overlay" id="sidebarOverlay"></div>
+      </div>
+    </header>    <!-- Sidebar Container - será inyectado por sidebar.js -->
+    <div id="sidebar-container"></div>
 
-      <div class="app-content">
-        <!-- Sidebar -->
-        <aside class="sidebar" id="sidebar">
-          <div class="sidebar-content">
-            <nav class="sidebar-nav">
-              <a href="dashboard.html" class="sidebar-item">Inicio</a>
-              <a href="biomo.html" class="sidebar-item active">Asistente de Mi Biomo</a>
-              <a href="explorador.html" class="sidebar-item">Asistente Explorador de Anteproyectos</a>
-              <a href="convocatorias.html" class="sidebar-item">Asistente de Convocatorias</a>
-            </nav>
-            <div class="sidebar-footer">
-              <a href="#" class="support-link">
-                <img src="support-icon.svg" alt="Soporte" />
-                Contacta con el soporte
-              </a>
-            </div>
-          </div>
-        </aside>
-
-        <!-- Main content -->        <main class="main-content">          <!-- Botón para colapsar sidebar -->
-          <button class="sidebar-collapse-btn" id="sidebarCollapseBtn">
-            <
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path d="M15 18L9 12L15 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
+    <div class="app-content">
+      <!-- Main content -->
+      <main class="main-content">
+        <div class="content-wrapper">
+          <h1>Asistente de Mi Biomo</h1>
           
-          <div class="biomo-header">
-            <h1>Asistente de Mi Biomo</h1>
-            <p class="biomo-id">Biomo ID: 1234</p>
-            
-            <div class="biomo-actions">
-              <button class="action-button">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <path d="M12 5V19M5 12H19" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                Subir Datos
-              </button>
-              
-              <button class="action-button">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <path d="M14 3H20V9M14 3L9 8M20 9L9 20M9 20H3V14M9 20L4 15M3 14L8 9M8 9L14 3" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                Generar PDF
-              </button>
+          <div class="chat-container">
+            <div class="chat-header">
+              <h2>Chat con tu Asistente de Biomonitoreo</h2>
+              <p>Haz preguntas sobre biomonitoreo, especies, protocolos y análisis de datos</p>
             </div>
-          </div>          <div class="chat-container">
+            
             <div class="chat-messages" id="chatMessages">
-              <!-- Los mensajes del chat aparecerán aquí dinámicamente -->
+              <div class="message bot-message">
+                <div class="message-avatar">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="m2 17 10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="m2 12 10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <div class="message-content">
+                  <p>¡Hola! Soy tu asistente de biomonitoreo. Puedo ayudarte con:</p>
+                  <ul>
+                    <li>Identificación de especies</li>
+                    <li>Protocolos de muestreo</li>
+                    <li>Análisis de biodiversidad</li>
+                    <li>Interpretación de datos ecológicos</li>
+                    <li>Mejores prácticas de conservación</li>
+                  </ul>
+                  <p>¿En qué puedo ayudarte hoy?</p>
+                </div>
+              </div>
             </div>
             
             <div class="chat-input-container">
-              <input 
-                type="text" 
-                class="chat-input" 
-                placeholder="Escribe..." 
-                id="chatInput"
-              />
-              <button class="send-button" id="sendButton">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M22 2L11 13M22 2L15 22L11 13M11 13L2 9L22 2" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </button>
+              <div class="chat-input-wrapper">
+                <textarea 
+                  id="messageInput" 
+                  placeholder="Escribe tu pregunta sobre biomonitoreo..."
+                  rows="1"
+                ></textarea>
+                <button id="sendButton" class="send-button">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M22 2L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+              </div>
             </div>
           </div>
-        </main>
-      </div>
+          
+          <div class="features-grid">
+            <div class="feature-card">
+              <div class="feature-icon">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </div>
+              <h3>Análisis Automático</h3>
+              <p>Procesa datos de biodiversidad y genera reportes automáticos con métricas clave</p>
+            </div>
+            
+            <div class="feature-card">
+              <div class="feature-icon">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" stroke="currentColor" stroke-width="2"/>
+                  <polyline points="3.27,6.96 12,12.01 20.73,6.96" stroke="currentColor" stroke-width="2"/>
+                  <line x1="12" y1="22.08" x2="12" y2="12" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </div>
+              <h3>Base de Conocimiento</h3>
+              <p>Accede a información actualizada sobre especies, protocolos y mejores prácticas</p>
+            </div>
+            
+            <div class="feature-card">
+              <div class="feature-icon">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                  <polyline points="22,12 18,12 15,21 9,3 6,12 2,12" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </div>
+              <h3>Monitoreo en Tiempo Real</h3>
+              <p>Seguimiento continuo de indicadores ecológicos y alertas automáticas</p>
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
+  </div>  <script src="js/sidebar.js"></script>
+  <script>
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize sidebar
+      initializeSidebar();
 
-    <!-- Scripts -->
-    <script src="auth-utils.js"></script>
-      <!-- SCRIPT TEMPORAL PARA DEBUGGING - CONFIGURAR TOKEN AUTOMÁTICAMENTE -->
-    <script>
-      // Configurar token de prueba automáticamente si no existe
-      function setupTestToken() {
-        // FORCE CLEAR AND RESET TOKEN FOR TESTING
-        console.log('🧹 Limpiando localStorage para testing...');
-        localStorage.removeItem('token');
-        localStorage.removeItem('userData');
-        
-        const token = localStorage.getItem('token');
-        if (!token) {
-          console.log('🔧 Configurando token de prueba automáticamente...');
-          const testToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QG1hd2kuY29tIiwibm9tYnJlIjoiVGVzdFVzZXIiLCJyb2wiOjIsImlhdCI6MTc0ODYzOTI1MSwiZXhwIjoxNzQ4NzI1NjUxfQ.JwSW2cXFOcR9TziM55a_xDBEbOq62h3VfiUHU5BWfiE';
-          
-          localStorage.setItem('token', testToken);
-          localStorage.setItem('userData', JSON.stringify({
-            id: 1,
-            email: "test@mawi.com",
-            nombre: "TestUser",
-            rol: 2
-          }));
-          
-          console.log('✅ Token de prueba configurado correctamente');
-          console.log('🔑 Token:', testToken);
-        } else {
-          console.log('ℹ️ Token ya existe:', token);
-        }
-      }
-      
-      // Configurar token antes de inicializar la página
-      setupTestToken();
-      
-      // Mostrar información de debugging en consola
-      function showDebugInfo() {
-        const token = localStorage.getItem('token');
-        const userData = localStorage.getItem('userData');
-        
-        console.log('🔍 DEBUG INFO:');
-        console.log('📱 Current URL:', window.location.href);
-        console.log('🔑 Token exists:', !!token);
-        console.log('👤 UserData exists:', !!userData);
-        
-        if (token) {
-          console.log('🔑 Token (first 50 chars):', token.substring(0, 50) + '...');
-        }
-        
-        if (userData) {
-          try {
-            console.log('👤 UserData:', JSON.parse(userData));
-          } catch (e) {
-            console.log('❌ Invalid UserData format:', userData);
-          }
-        }
-        
-        // Probar la URL del API
-        console.log('🌐 API URL que se usará:', '/Consultas/api/chat');
-      }
-      
-      // Mostrar debug info
-      showDebugInfo();
-    </script>
-      <script>
-      // Inicializar la aplicación cuando el DOM esté listo
-      document.addEventListener('DOMContentLoaded', function() {
-        // Inicializar página con sidebar
-        if (!initializePage({ showSidebar: true })) {
-          return;
-        }
-        
-        // Funcionalidad específica del chat
-        initializeBiomoChat();
-      });
-      
-      // Función para inicializar el chat del biomo con API de AI
-      function initializeBiomoChat() {
-        const chatInput = document.getElementById('chatInput');
-        const sendButton = document.getElementById('sendButton');
-        const chatMessages = document.getElementById('chatMessages');
-        
-        // Mostrar mensaje de bienvenida inicial
-        const welcomeMessage = document.createElement('div');
-        welcomeMessage.className = 'message bot-message';
-        welcomeMessage.innerHTML = `<p>👋 ¡Hola! Soy tu asistente especializado en biomonitoreo ambiental. Estoy aquí para ayudarte con cualquier consulta sobre tu Biomo, análisis de datos ecológicos, o gestión de proyectos ambientales. ¿En qué puedo asistirte hoy?</p>`;
-        chatMessages.appendChild(welcomeMessage);        // Configuración para el chat AI
-        // Ahora usamos la API del servidor que maneja las credenciales de forma segura
-        const CHAT_CONFIG = {
-          API_ENDPOINT: '/Consultas/api/chat',
-          CONTEXT: 'biomo'
-        };
-        
-        async function sendMessage() {
-          const message = chatInput.value.trim();
-          if (!message) return;
-          
-          // Agregar mensaje del usuario
-          const userMessage = document.createElement('div');
-          userMessage.className = 'message user-message';
-          userMessage.innerHTML = `<p>${message}</p>`;
-          chatMessages.appendChild(userMessage);
-          
-          // Limpiar input y hacer scroll
-          chatInput.value = '';
-          chatMessages.scrollTop = chatMessages.scrollHeight;
-          
-          // Mostrar indicador de escritura
-          const typingIndicator = document.createElement('div');
-          typingIndicator.className = 'message bot-message typing-indicator';
-          typingIndicator.innerHTML = `<p>🤖 Analizando tu consulta sobre el Biomo...</p>`;
-          chatMessages.appendChild(typingIndicator);
-          chatMessages.scrollTop = chatMessages.scrollHeight;
-            try {
-            // Llamar a la nueva API del servidor
-            const token = localStorage.getItem('token');
-            const response = await fetch(CHAT_CONFIG.API_ENDPOINT, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-              },
-              body: JSON.stringify({
-                message: message,
-                context: CHAT_CONFIG.CONTEXT
-              })
-            });
-            
-            // Remover indicador de escritura
-            chatMessages.removeChild(typingIndicator);
-            
-            if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            
-            const data = await response.json();
-            
-            if (data.success) {
-              // Respuesta exitosa de la AI
-              const aiResponse = data.response;
-              
-              // Agregar respuesta de la AI
-              const botMessage = document.createElement('div');
-              botMessage.className = 'message bot-message';
-              botMessage.innerHTML = `<p>${aiResponse}</p>`;
-              chatMessages.appendChild(botMessage);
-            } else {
-              // Usar respuesta de fallback
-              const fallbackMessage = document.createElement('div');
-              fallbackMessage.className = 'message bot-message';
-              fallbackMessage.innerHTML = `<p>${data.fallbackResponse}</p>`;
-              chatMessages.appendChild(fallbackMessage);
-            }          } catch (error) {
-            console.error('Error llamando a la API de AI:', error);
-            
-            // Información adicional de debugging
-            console.log('🔍 DEBUG - Error details:');
-            console.log('📱 URL:', CHAT_CONFIG.API_ENDPOINT);
-            console.log('🔑 Token exists:', !!localStorage.getItem('token'));
-            console.log('📦 Message sent:', message);
-            console.log('🌐 Full URL attempted:', window.location.origin + CHAT_CONFIG.API_ENDPOINT);
-            
-            // Remover indicador de escritura si aún existe
-            if (chatMessages.contains(typingIndicator)) {
-              chatMessages.removeChild(typingIndicator);
-            }
-            
-            // Mostrar mensaje de error contextual con información de debugging
-            const errorMessage = document.createElement('div');
-            errorMessage.className = 'message bot-message error-message';
-            
-            // Crear respuesta de fallback más inteligente
-            let fallbackText = '';
-            const messageLower = message.toLowerCase();
-            
-            if (messageLower.includes('datos') || messageLower.includes('registros')) {
-              fallbackText = '📊 Para consultar tus datos de biomonitoreo, accede al panel de administración donde encontrarás todos tus registros organizados.';
-            } else if (messageLower.includes('subir') || messageLower.includes('cargar')) {
-              fallbackText = '📤 Para subir nuevos datos, usa el botón "Subir Datos" en la parte superior de esta página.';
-            } else if (messageLower.includes('reporte') || messageLower.includes('pdf')) {
-              fallbackText = '📋 Para generar reportes, utiliza el botón "Generar PDF" que crea análisis detallados de tus datos.';
-            } else if (messageLower.includes('especies') || messageLower.includes('biodiversidad')) {
-              fallbackText = '🌱 Para información sobre especies, consulta nuestra base de datos de biodiversidad integrada.';
-            } else {
-              fallbackText = '🔬 Como especialista en biomonitoreo, puedo ayudarte con análisis de datos, gestión de registros y generación de reportes ambientales.';
-            }            
-            errorMessage.innerHTML = `
-              <p><strong>🤖 Asistente Biomo:</strong> Lo siento, hay un problema temporal con el servicio de AI.</p>
-              <p><strong>🔍 Error:</strong> ${error.message}</p>
-              <p>${fallbackText}</p>
-              <p><em>¿Necesitas ayuda con algún tema específico del biomonitoreo?</em></p>
-              <p><small>🛠️ Debug info: URL=${CHAT_CONFIG.API_ENDPOINT}, Token=${!!localStorage.getItem('token')}</small></p>
-            `;
-            chatMessages.appendChild(errorMessage);
-          }
-          
-          // Scroll al final
-          chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-        
-        // Event listeners para el chat
-        if (sendButton) {
-          sendButton.addEventListener('click', sendMessage);
-        }
-        
-        if (chatInput) {
-          chatInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-              sendMessage();
-            }
-          });
-        }
-        
-        // Mensaje de bienvenida mejorado
-        setTimeout(() => {
-          const welcomeMessage = document.createElement('div');
-          welcomeMessage.className = 'message bot-message';
-          welcomeMessage.innerHTML = `
-            <p>¡Hola! Soy Mawi AI, tu asistente especializado en biomonitoreo. Estoy aquí para ayudarte con:</p>
-            <ul>
-              <li>🌿 Análisis de datos de tu Biomo</li>
-              <li>📊 Interpretación de métricas ambientales</li>
-              <li>📋 Gestión de registros de biodiversidad</li>
-              <li>🔍 Recomendaciones para monitoreo</li>
-              <li>📄 Generación de reportes</li>
-            </ul>
-            <p>¿En qué puedo ayudarte hoy?</p>
-          `;
-          chatMessages.appendChild(welcomeMessage);
-          chatMessages.scrollTop = chatMessages.scrollHeight;
-        }, 1000);
-      }
-    </script>
+      // Chat functionality
+      const messageInput = document.getElementById('messageInput');
+    const sendButton = document.getElementById('sendButton');
+    const chatMessages = document.getElementById('chatMessages');
 
-    <style>
-      /* Estilos específicos para biomo.html */
-      .biomo-header {
-        margin-bottom: 24px;
+    function sendMessage() {
+      const message = messageInput.value.trim();
+      if (!message) return;
+
+      // Add user message
+      addMessage(message, 'user');
+      messageInput.value = '';
+      
+      // Simulate bot response
+      setTimeout(() => {
+        addMessage(getBotResponse(message), 'bot');
+      }, 1000);
+    }
+
+    function addMessage(content, sender) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${sender}-message`;
+      
+      const avatar = document.createElement('div');
+      avatar.className = 'message-avatar';
+      
+      if (sender === 'bot') {
+        avatar.innerHTML = `
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2L2 7l10 5 10-5-10-5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="m2 17 10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="m2 12 10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        `;
+      } else {
+        avatar.innerHTML = `
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+          </svg>
+        `;
       }
       
-      .biomo-header h1 {
-        text-align: left;
-        margin-bottom: 4px;
-        font-size: 1.5rem;
-        color: white;
-      }
+      const contentDiv = document.createElement('div');
+      contentDiv.className = 'message-content';
+      contentDiv.innerHTML = `<p>${content}</p>`;
       
-      .biomo-id {
-        color: #ccc;
-        margin: 0 0 16px;
-        font-size: 0.9rem;
-      }
+      messageDiv.appendChild(avatar);
+      messageDiv.appendChild(contentDiv);
+      chatMessages.appendChild(messageDiv);
       
-      .biomo-actions {
-        display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function getBotResponse(message) {
+      const responses = [
+        "Excelente pregunta. En biomonitoreo, es importante considerar múltiples factores ambientales...",
+        "Para este tipo de análisis, te recomiendo revisar los protocolos estándar de muestreo...",
+        "Los datos que mencionas pueden indicar cambios en la biodiversidad local. Te sugiero...",
+        "Esta especie es un excelente indicador biológico. Sus poblaciones reflejan...",
+        "El protocolo más adecuado para este caso sería el muestreo sistemático con..."
+      ];
+      return responses[Math.floor(Math.random() * responses.length)];
+    }
+
+    sendButton.addEventListener('click', sendMessage);
+    messageInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
       }
-      
-      .action-button {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        background-color: #30a046;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        padding: 10px 16px;
-        font-size: 0.9rem;
-        cursor: pointer;
-        transition: background-color 0.2s;
-      }
-      
-      .action-button:hover {
-        background-color: #278c3b;
-      }
-      
-      .chat-container {
-        background-color: #333;
-        border-radius: 8px;
-        height: calc(100vh - 280px);
-        display: flex;
-        flex-direction: column;
-        min-height: 400px;
-      }
-      
-      .chat-messages {
-        flex: 1;
-        padding: 16px;
-        overflow-y: auto;
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-      }
-      
-      .message {
-        max-width: 80%;
-        padding: 12px 16px;
-        border-radius: 8px;
-        line-height: 1.5;
-      }
-      
-      .bot-message {
-        background-color: #444;
-        align-self: flex-start;
-        border-top-left-radius: 0;
-      }
-      
-      .user-message {
-        background-color: #30a046;
-        align-self: flex-end;
-        border-bottom-right-radius: 0;
-      }
-      
-      .message p {
-        margin: 0 0 8px;
-        color: white;
-      }
-      
-      .message p:last-child {
-        margin: 0;
-      }
-      
-      .chat-input-container {
-        display: flex;
-        padding: 16px;
-        border-top: 1px solid #444;
-        gap: 8px;
-      }
-      
-      .chat-input {
-        flex: 1;
-        background-color: #444;
-        border: none;
-        border-radius: 8px;
-        padding: 12px 16px;
-        color: white;
-        font-size: 14px;
-      }
-      
-      .chat-input:focus {
-        outline: none;
-        box-shadow: 0 0 0 2px rgba(48, 160, 70, 0.5);
-      }
-      
-      .chat-input::placeholder {
-        color: #999;
-      }
-      
-      .send-button {
-        background-color: #30a046;
-        border: none;
-        border-radius: 8px;
-        width: 42px;
-        height: 42px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: background-color 0.2s;
-      }
-      
-      .send-button:hover {
-        background-color: #278c3b;
-      }
-      
-      /* Estilos adicionales para el chat con AI */
-      .typing-indicator {
-        animation: pulse 1.5s infinite;
-      }
-      
-      @keyframes pulse {
-        0% { opacity: 0.6; }
-        50% { opacity: 1; }
-        100% { opacity: 0.6; }
-      }
-      
-      .error-message {
-        border-left: 4px solid #ff6b6b;
-        background-color: #4a2c2c !important;
-      }
-      
-      .message ul {
-        margin: 8px 0;
-        padding-left: 20px;
-      }
-      
-      .message li {
-        margin: 4px 0;
-        color: #e0e0e0;
-      }
-      
-      .chat-input:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-      }
-      
-      .send-button:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-        background-color: #666;
-      }
-      
-      .welcome-message {
-        border-left: 4px solid #30a046;
-        background-color: #2d4a2d !important;
-      }
-      
-      /* Media queries para responsividad */
-      @media (max-width: 768px) {
-        .biomo-actions {
-          flex-direction: column;
-        }
-        
-        .action-button {
-          justify-content: center;
-        }
-        
-        .chat-container {
-          height: calc(100vh - 320px);
-        }
-        
-        .main-content {
-          padding: 16px;
-        }
-        
-        .message {
-          max-width: 95%;
-        }      }
-    </style>    <script>
-      // Manejo del sidebar colapsable
-      document.addEventListener('DOMContentLoaded', function() {
-        const sidebarCollapseBtn = document.getElementById('sidebarCollapseBtn');
-        const sidebar = document.getElementById('sidebar');
-        const sidebarOverlay = document.getElementById('sidebarOverlay');
-        
-        // Debug: verificar que los elementos existen
-        console.log('sidebarCollapseBtn:', sidebarCollapseBtn);
-        console.log('sidebar:', sidebar);
-        console.log('sidebarOverlay:', sidebarOverlay);
-        
-        if (!sidebarCollapseBtn || !sidebar || !sidebarOverlay) return;
-        
-        // Función para alternar el sidebar
-        function toggleSidebar() {
-          const isCollapsed = sidebar.classList.contains('collapsed');
-          
-          if (isCollapsed) {
-            // Expandir
-            sidebar.classList.remove('collapsed');
-            
-            // En móvil, mostrar overlay
-            if (window.innerWidth <= 768) {
-              sidebarOverlay.classList.add('active');
-            }
-          } else {
-            // Colapsar
-            sidebar.classList.add('collapsed');
-            sidebarOverlay.classList.remove('active');
-          }
-        }
-        
-        // Event listeners
-        sidebarCollapseBtn.addEventListener('click', toggleSidebar);
-        
-        // Cerrar sidebar al hacer clic en el overlay (móvil)
-        sidebarOverlay.addEventListener('click', function() {
-          sidebar.classList.add('collapsed');
-          sidebarOverlay.classList.remove('active');
-        });
-        
-        // Manejar cambios de tamaño de ventana
-        window.addEventListener('resize', function() {
-          if (window.innerWidth > 768) {
-            // En desktop, quitar overlay
-            sidebarOverlay.classList.remove('active');
-          } else if (!sidebar.classList.contains('collapsed')) {
-            // En móvil, mostrar overlay si sidebar está abierto
-            sidebarOverlay.classList.add('active');
-          }
-        });
-        
-        // Inicializar estado del sidebar en móvil
-        if (window.innerWidth <= 768) {
-          sidebar.classList.add('collapsed');
-        }
-      });
-    </script>
-  </body>
+    });    // Auto-resize textarea
+    messageInput.addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+    });    });
+  </script>
+  <!-- Sidebar modular -->
+  <script src="sidebar.js"></script>
+  <script>
+    // Inicializar sidebar modular
+    initMawiSidebar('biomo');
+  </script>
+  
+  <!-- Script de verificación (solo para desarrollo) -->
+  <script src="verification-script.js"></script>
+</body>
 </html>

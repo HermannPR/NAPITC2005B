@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/admin.css">
-    <link rel="stylesheet" href="css/sidebar-styles.css">
     
     <style>
         .pending-users-container {
@@ -221,130 +220,101 @@
         }
     </style>
 </head>
-<body class="with-sidebar-toggle">
-    <div class="mawi-app-container">
+<body>
+    <div class="pending-users-container">
+        <!-- Back Button -->
+        <div class="back-button">
+            <a href="Adminindex.html" class="btn btn-secondary">
+                ← Volver al Panel de Administración
+            </a>
+        </div>
+        
         <!-- Header -->
-        <header class="mawi-header">
-            <div class="logo">
-                <img src="eye-icon.svg" alt="Mawi" class="eye-icon" />
-                <h2>MAWI</h2>
+        <header class="admin-header">
+            <div class="admin-title">
+                <h1>👥 Gestión de Usuarios Pendientes</h1>
             </div>
-            <div class="user-menu">
-                <span id="admin-name" class="user-name">Super Admin</span>
-                <div class="avatar-circle">
-                    <i class="fas fa-user-shield"></i>
-                </div>
+            <div class="admin-user-info">
+                <span id="admin-name">Administrador</span>
+                <span class="admin-role-badge">Admin</span>
+                <a href="login.html" onclick="logout()" class="btn btn-sm btn-secondary">
+                    Cerrar Sesión
+                </a>
             </div>
         </header>
-
-        <!-- Sidebar Container -->
-        <div id="sidebar-container"></div>
-
-        <div class="app-content">
-            <main class="main-content">
-                <!-- Page Header -->
-                <div class="page-header">
-                    <h1>👥 Gestión de Usuarios Pendientes</h1>
-                    <p>Revisa y aprueba las solicitudes de registro de nuevos usuarios</p>
-                </div>
-
-                <!-- Stats Section -->
-                <div class="pending-stats">
-                    <div class="stat-card">
-                        <span id="total-pending" class="stat-number">0</span>
-                        <span class="stat-label">Usuarios Pendientes</span>
-                    </div>
-                    <div class="stat-card">
-                        <span id="approved-today" class="stat-number">0</span>
-                        <span class="stat-label">Aprobados Hoy</span>
-                    </div>
-                    <div class="stat-card">
-                        <span id="rejected-today" class="stat-number">0</span>
-                        <span class="stat-label">Rechazados Hoy</span>
-                    </div>
-                </div>
-
-                <!-- Users Table -->
-                <div class="users-table-container">
-                    <div class="table-header">
-                        <h3>Solicitudes Pendientes</h3>
-                        <p>Usuarios que esperan aprobación para acceder al sistema</p>
-                    </div>
-                    
-                    <div id="loading-container" style="padding: 40px; text-align: center;">
-                        <div class="loading-spinner"></div>
-                        <p>Cargando usuarios pendientes...</p>
-                    </div>
-                    
-                    <div id="users-content" style="display: none;">
-                        <table class="users-table">
-                            <thead>
-                                <tr>
-                                    <th>Usuario</th>
-                                    <th>Rol Solicitado</th>
-                                    <th>Fecha de Registro</th>
-                                    <th>Organización</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody id="users-table-body">
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                    <div id="no-users-message" class="no-users" style="display: none;">
-                        <div class="no-users-icon">✅</div>
-                        <h3>¡Excelente!</h3>
-                        <p>No hay usuarios pendientes de aprobación en este momento.</p>
-                        <p>Todos los usuarios han sido procesados.</p>
-                    </div>
-                </div>
-            </main>
+        
+        <!-- Header Section -->
+        <div class="pending-header">
+            <h2>Usuarios Pendientes de Aprobación</h2>
+            <p>Revisa y aprueba las solicitudes de registro de nuevos usuarios</p>
+        </div>
+        
+        <!-- Stats Section -->
+        <div class="pending-stats">
+            <div class="stat-card">
+                <span class="stat-number" id="total-pending">-</span>
+                <span class="stat-label">Usuarios Pendientes</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="total-approved-today">-</span>
+                <span class="stat-label">Aprobados Hoy</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="total-system-users">-</span>
+                <span class="stat-label">Total en Sistema</span>
+            </div>
+        </div>
+        
+        <!-- Users Table -->
+        <div class="users-table-container">
+            <div class="table-header">
+                <h3>Solicitudes Pendientes</h3>
+                <p>Usuarios que esperan aprobación para acceder al sistema</p>
+            </div>
+            
+            <div id="loading-container" style="padding: 40px; text-align: center;">
+                <div class="loading-spinner"></div>
+                <p>Cargando usuarios pendientes...</p>
+            </div>
+            
+            <div id="users-content" style="display: none;">
+                <table class="users-table">
+                    <thead>
+                        <tr>
+                            <th>Usuario</th>
+                            <th>Rol Solicitado</th>
+                            <th>Fecha de Registro</th>
+                            <th>Organización</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-table-body">
+                    </tbody>
+                </table>
+            </div>
+            
+            <div id="no-users-message" class="no-users" style="display: none;">
+                <div class="no-users-icon">✅</div>
+                <h3>¡Excelente!</h3>
+                <p>No hay usuarios pendientes de aprobación en este momento.</p>
+                <p>Todos los usuarios han sido procesados.</p>
+            </div>
         </div>
     </div>
 
     <!-- Include shared authentication utilities -->
     <script src="auth-utils.js"></script>
-    <script src="sidebar.js"></script>
     <script>
         // =================================
         // INICIALIZACIÓN
         // =================================
-        async function initializePage() {
-            console.log('🚀 Inicializando gestión de usuarios pendientes...');
-            
-            try {
-                // Inicializar sidebar unificado
-                initMawiSidebar('admin');
-                
-                // Verificar autenticación
-                if (!checkAuthAndRedirect()) {
-                    return;
-                }
-                
-                // Verificar rol de super administrador
-                const userRole = getUserRole();
-                if (userRole < 4) {
-                    alert('❌ Acceso denegado. Se requieren permisos de Super Administrador.');
-                    window.location.href = 'dashboard.html';
-                    return;
-                }
-                
-                // Setup header
-                setupUserHeader();
-                
-                // Load data
-                await loadPendingUsers();
-                await loadStats();
-                
-            } catch (error) {
-                console.error('Error en inicialización:', error);
-                alert('Error cargando datos. Intentando nuevamente...');
-                setTimeout(() => {
-                    window.location.reload();
-                }, 2000);
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize authentication and check admin permissions
+            if (initializeAuth(true)) {
+                loadPendingUsers();
+                loadStats();
             }
-        }
+        });
 
         // =================================
         // FUNCIONES DE DATOS
@@ -413,12 +383,11 @@
                 if (usersResponse.ok) {
                     const usersData = await usersResponse.json();
                     const totalUsers = usersData.records?.length || 0;
-                    // Update total users stat if needed (not shown in current UI)
+                    document.getElementById('total-system-users').textContent = totalUsers;
                 }
                 
                 // For now, set approved today to 0 (could be implemented with date filtering)
-                document.getElementById('approved-today').textContent = 0;
-                document.getElementById('rejected-today').textContent = 0;
+                document.getElementById('total-approved-today').textContent = 0;
                 
             } catch (error) {
                 console.error('Error cargando estadísticas:', error);
@@ -474,8 +443,7 @@
 
         // =================================
         // FUNCIONES DE ACCIONES
-        // =================================
-        async function approveUser(userId, userName) {
+        // =================================        async function approveUser(userId, userName) {
             if (!confirm(`¿Estás seguro de que quieres aprobar al usuario "${userName}"?`)) {
                 return;
             }
@@ -503,8 +471,8 @@
                 alert(`✅ Usuario "${userName}" aprobado exitosamente`);
                 
                 // Reload the users list
-                await loadPendingUsers();
-                await loadStats();
+                loadPendingUsers();
+                loadStats();
                 
             } catch (error) {
                 console.error('Error aprobando usuario:', error);
@@ -539,8 +507,8 @@
                 alert(`✅ Usuario "${userName}" rechazado y eliminado del sistema`);
                 
                 // Reload the users list
-                await loadPendingUsers();
-                await loadStats();
+                loadPendingUsers();
+                loadStats();
                 
             } catch (error) {
                 console.error('Error rechazando usuario:', error);
@@ -552,11 +520,6 @@
             // For now, show a simple alert. Could be expanded to show a modal with full user details
             alert(`🔍 Ver detalles del usuario ID: ${userId}\n\n(Función en desarrollo - se mostraría un modal con información completa del usuario)`);
         }
-
-        // =================================
-        // EVENTOS
-        // =================================
-        window.addEventListener('DOMContentLoaded', initializePage);
     </script>
 </body>
 </html>

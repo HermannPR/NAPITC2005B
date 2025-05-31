@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Usuario - Mawi</title>
     <meta name="description" content="Dashboard para usuarios del sistema de biomonitoreo">
-    
-    <!-- CSS Imports -->
+      <!-- CSS Imports -->
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/sidebar-styles.css">
     
     <style>
         /* Estilos específicos para dashboard de usuario */
@@ -221,30 +221,30 @@
         }
     </style>
 </head>
-<body class="user-dashboard">
-    <!-- Header -->
-    <header class="user-header">
-        <div class="user-title">
-            <h1>🌿 Dashboard Biomonitoreo</h1>
-        </div>
-        <div class="user-info">
-            <span id="user-name" class="user-name">Usuario</span>
-            <span id="user-role-badge" class="user-role-badge">Usuario</span>
-            <button onclick="logout()" class="btn btn-sm btn-secondary">
-                Cerrar Sesión
-            </button>
-        </div>
-    </header>
+<body class="with-sidebar-toggle">
+    <div class="mawi-app-container">
+        <!-- Header -->
+        <header class="mawi-header">
+            <div class="logo">
+                <img src="eye-icon.svg" alt="Mawi" class="eye-icon" />
+                <h2>MAWI</h2>
+            </div>
+            <div class="user-menu">
+                <span id="user-name" class="user-name">Usuario</span>
+                <div class="avatar-circle">
+                    <i class="fas fa-user"></i>
+                </div>
+            </div>
+        </header>
 
-    <!-- Main Content -->
-    <main class="user-content">
-        <!-- Welcome Section -->
-        <div class="welcome-section">
-            <h2>Bienvenido al Sistema de Biomonitoreo</h2>
-            <p>Selecciona un formulario para registrar tus observaciones de campo</p>
-        </div>
-
-        <!-- Stats Overview -->
+        <!-- Sidebar Container -->
+        <div id="sidebar-container"></div>        <div class="app-content">
+            <main class="main-content">
+                <!-- Welcome Section -->
+                <div class="page-header">
+                    <h1>🌿 Dashboard Biomonitoreo</h1>
+                    <p>Selecciona un formulario para registrar tus observaciones de campo</p>
+                </div>        <!-- Stats Overview -->
         <div class="stats-grid">
             <div class="stat-card">
                 <span id="total-records" class="stat-number">0</span>
@@ -347,16 +347,18 @@
                 </button>
                 <button onclick="showUserProfile()" class="btn btn-info">
                     👤 Mi Perfil
-                </button>
-                <button onclick="showHelp()" class="btn btn-warning">
+                </button>                <button onclick="showHelp()" class="btn btn-warning">
                     ❓ Ayuda
                 </button>
             </div>
         </div>
-    </main>
+            </main>
+        </div>
+    </div>
 
     <!-- Include shared authentication utilities -->
     <script src="auth-utils.js"></script>
+    <script src="sidebar.js"></script>
     <script>
         // =================================
         // INICIALIZACIÓN
@@ -365,6 +367,9 @@
             console.log('🚀 Inicializando dashboard de usuario...');
             
             try {
+                // Inicializar sidebar unificado
+                initMawiSidebar('dashboard');
+                
                 // Verificar autenticación
                 if (!checkAuthAndRedirect()) {
                     return;

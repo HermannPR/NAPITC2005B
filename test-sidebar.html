@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Sidebar Collapse - MAWI</title>
+    <link rel="stylesheet" href="/css/sidebar-styles.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #212121;
+            color: white;
+        }
+        .test-container {
+            padding: 20px;
+            margin-left: 300px;
+            transition: margin-left 0.3s ease;
+        }
+        .test-container.full-width {
+            margin-left: 60px;
+        }
+        .test-instructions {
+            background-color: #333;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .test-button {
+            background-color: #30a046;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        .test-results {
+            background-color: #1a1a1a;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-pass { background-color: #30a046; }
+        .status-fail { background-color: #e74c3c; }
+        .status-warning { background-color: #f39c12; }
+    </style>
+</head>
+<body class="with-sidebar-toggle">
+    
+    <!-- Header with toggle button -->
+    <header class="mawi-header">
+        <button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle navigation">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M3 12H21M3 6H21M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+        </button>
+        <div class="logo">
+            <img src="/eye-icon.svg" alt="MAWI" class="eye-icon">
+            <h2>MAWI</h2>
+        </div>
+        <div class="user-menu">
+            <span>Test Page</span>
+        </div>
+    </header>
+
+    <!-- Sidebar will be injected here -->
+    <div id="sidebar-container"></div>
+
+    <!-- Main content -->
+    <div class="test-container" id="test-container">
+        <div class="test-instructions">
+            <h1>🔧 Sidebar Collapse Test</h1>
+            <p>Esta página permite probar la funcionalidad de colapso del sidebar.</p>
+            <h3>Instrucciones:</h3>
+            <ol>
+                <li>Haz clic en el botón de hamburguesa (☰) en el header</li>
+                <li>Observa que el sidebar se colapsa y los textos desaparecen</li>
+                <li>Haz clic nuevamente para expandir</li>
+                <li>Usa los botones de prueba abajo para verificar el estado</li>
+            </ol>
+        </div>
+
+        <div class="test-actions">
+            <button class="test-button" onclick="testSidebarState()">🔍 Check Sidebar State</button>
+            <button class="test-button" onclick="testSpanVisibility()">👁️ Check Text Visibility</button>
+            <button class="test-button" onclick="testToggleFunction()">🔄 Test Toggle Function</button>
+            <button class="test-button" onclick="clearResults()">🗑️ Clear Results</button>
+        </div>
+
+        <div class="test-results" id="test-results">
+            <strong>Test Results:</strong><br>
+            <em>Click test buttons above to see results...</em>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/sidebar.js"></script>
+    <script>
+        // Initialize sidebar
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof SidebarManager !== 'undefined') {
+                window.mawiSidebar = new SidebarManager('test');
+            }
+
+            // Adjust main content margin based on sidebar state
+            adjustContentMargin();
+        });
+
+        function adjustContentMargin() {
+            const sidebar = document.getElementById('mawi-sidebar');
+            const container = document.getElementById('test-container');
+            
+            if (sidebar && container) {
+                const isCollapsed = sidebar.classList.contains('collapsed');
+                container.classList.toggle('full-width', isCollapsed);
+            }
+        }
+
+        // Test functions
+        function testSidebarState() {
+            const sidebar = document.getElementById('mawi-sidebar');
+            const results = document.getElementById('test-results');
+            
+            if (!sidebar) {
+                addResult('❌ Sidebar element not found', 'fail');
+                return;
+            }
+
+            const isCollapsed = sidebar.classList.contains('collapsed');
+            const width = window.getComputedStyle(sidebar).width;
+            
+            addResult(`Sidebar collapsed: ${isCollapsed}`, isCollapsed ? 'pass' : 'warning');
+            addResult(`Sidebar width: ${width}`, 'pass');
+            addResult(`Sidebar classes: ${sidebar.className}`, 'pass');
+        }
+
+        function testSpanVisibility() {
+            const sidebar = document.getElementById('mawi-sidebar');
+            const results = document.getElementById('test-results');
+            
+            if (!sidebar) {
+                addResult('❌ Sidebar element not found', 'fail');
+                return;
+            }
+
+            const spans = sidebar.querySelectorAll('.sidebar-item span');
+            const isCollapsed = sidebar.classList.contains('collapsed');
+            
+            addResult(`Found ${spans.length} text spans`, 'pass');
+            
+            spans.forEach((span, index) => {
+                const computedStyle = window.getComputedStyle(span);
+                const display = computedStyle.display;
+                const visibility = computedStyle.visibility;
+                const opacity = computedStyle.opacity;
+                
+                const isHidden = display === 'none' || visibility === 'hidden' || opacity === '0';
+                const shouldBeHidden = isCollapsed;
+                
+                const status = (isHidden === shouldBeHidden) ? 'pass' : 'fail';
+                addResult(`Span ${index + 1} ("${span.textContent}"): display=${display}, visibility=${visibility}, opacity=${opacity}`, status);
+            });
+        }
+
+        function testToggleFunction() {
+            const results = document.getElementById('test-results');
+            
+            if (typeof window.mawiSidebar === 'undefined') {
+                addResult('❌ Sidebar manager not available', 'fail');
+                return;
+            }
+
+            try {
+                const beforeState = window.mawiSidebar.isCollapsed;
+                window.mawiSidebar.toggle();
+                const afterState = window.mawiSidebar.isCollapsed;
+                
+                addResult(`Toggle executed: ${beforeState} → ${afterState}`, 'pass');
+                adjustContentMargin();
+                
+                // Test again to see the effect
+                setTimeout(() => {
+                    testSpanVisibility();
+                }, 500);
+                
+            } catch (error) {
+                addResult(`❌ Toggle function error: ${error.message}`, 'fail');
+            }
+        }
+
+        function addResult(message, status) {
+            const results = document.getElementById('test-results');
+            const timestamp = new Date().toLocaleTimeString();
+            const statusClass = `status-${status}`;
+            
+            results.innerHTML += `<div><span class="status-indicator ${statusClass}"></span>[${timestamp}] ${message}</div>`;
+            results.scrollTop = results.scrollHeight;
+        }
+
+        function clearResults() {
+            const results = document.getElementById('test-results');
+            results.innerHTML = '<strong>Test Results:</strong><br><em>Click test buttons above to see results...</em>';
+        }
+    </script>
+</body>
+</html>

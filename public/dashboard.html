@@ -6,33 +6,27 @@
     <title>Dashboard - Mawi</title>
     <meta name="description" content="Dashboard de Mawi" />    <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="css/sidebar-styles.css" />
-  </head>
-  <body>
+  </head>  <body class="with-sidebar-toggle">
     <div class="mawi-app-container">
       <header class="mawi-header">
-        <div class="sidebar-toggle" onclick="toggleSidebar()">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M4 6H20M4 12H20M4 18H20" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        
         <div class="logo">
           <img src="eye-icon.svg" alt="Mawi" class="eye-icon" />
           <h2>Mawi</h2>
         </div>
-          <div class="user-menu">
+        
+        <div class="user-menu">
           <span id="user-role-display">Usuario</span>
           <div class="avatar-circle">
             <a href="perfil.html">
               <img src="avatar-placeholder.svg" alt="Usuario" />
             </a>
           </div>
-        </div>
-      </header>
+        </div>      </header>
+
+      <!-- Sidebar Container - será inyectado por sidebar.js -->
+      <div id="sidebar-container"></div>
 
       <div class="app-content">
-        <!-- La sidebar se insertará aquí automáticamente -->
-
         <!-- Main content -->
         <main class="main-content">
           <div class="dashboard-content">
@@ -70,31 +64,37 @@
               Interactúa con todas aquellas convocatorias abiertas y formula
               anteproyectos.
             </p>
-          </a>
-        </div>          <div class="support-container">
-            <a href="#" class="support-button">
-              <img src="support-icon.svg" alt="Soporte" />
-              Contacta con el soporte
-            </a>
-          </div>
+          </a>        </div>
         </main>
       </div>
     </div>
     
     <!-- Include shared authentication utilities -->
-    <script src="auth-utils.js"></script>    <script>
+    <script src="auth-utils.js"></script>
+    <script src="js/sidebar.js"></script>
+    <script>
         // Initialize page with authentication check
         window.addEventListener('DOMContentLoaded', function() {
             console.log('🚀 Inicializando dashboard...');
+            
+            // Initialize sidebar
+            initializeSidebar();
             
             // Inicializar página con sidebar
             if (!initializePage({ showSidebar: true })) {
                 return;
             }
-            
-            console.log('✅ Dashboard cargado correctamente');
+              console.log('✅ Dashboard cargado correctamente');
         });
     </script>
+    
+    <!-- Sidebar modular -->
+    <script src="sidebar.js"></script>
+    <script>
+        // Inicializar sidebar modular
+        initMawiSidebar('dashboard');
+    </script>
+    
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
   </body>
 </html>

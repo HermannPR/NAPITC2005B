@@ -18,36 +18,14 @@
           <div class="avatar-circle">
             <img src="avatar-placeholder.svg" alt="Usuario" />
           </div>
-        </div>
-      </header><!-- Overlay para móvil -->
-      <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        </div>      </header>
+      
+      <!-- Sidebar Container - será inyectado por sidebar.js -->
+      <div id="sidebar-container"></div>
 
       <div class="app-content">
-        <!-- Sidebar -->
-        <aside class="sidebar" id="sidebar">
-          <div class="sidebar-content">
-            <nav class="sidebar-nav">
-              <a href="dashboard.html" class="sidebar-item">Inicio</a>
-              <a href="biomo.html" class="sidebar-item">Asistente de Mi Biomo</a>
-              <a href="explorador.html" class="sidebar-item active">Asistente Explorador de Anteproyectos</a>
-              <a href="convocatorias.html" class="sidebar-item">Asistente de Convocatorias</a>
-            </nav>
-            <div class="sidebar-footer">
-              <a href="#" class="support-link">
-                <img src="support-icon.svg" alt="Soporte" />
-                Contacta con el soporte
-              </a>
-            </div>
-          </div>
-        </aside>
-
-        <!-- Main content -->        <main class="main-content">
-          <!-- Botón para colapsar sidebar -->
-          <button class="sidebar-collapse-btn" id="sidebarCollapseBtn">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path d="M15 18L9 12L15 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
+        <!-- Main content -->
+        <main class="main-content">
           
           <div class="page-header">
             <h1>Asistente Explorador de Anteproyectos</h1>
@@ -405,69 +383,19 @@
         alert(`Abriendo proyecto ${projectId}...`);
         // Aquí iría la lógica para abrir el proyecto
       };
-      
-      window.viewClosedProject = function(projectId) {
+        window.viewClosedProject = function(projectId) {
         console.log('Viendo proyecto cerrado:', projectId);
         alert(`Viendo detalles del proyecto cerrado ${projectId}...`);
         // Aquí iría la lógica para ver el proyecto cerrado
-      };
-    </script>
-
+      };    </script>
+    
+    <!-- Sidebar modular -->
+    <script src="sidebar.js"></script>
     <script>
-      // Manejo del sidebar colapsable
+      // Initialize page
       document.addEventListener('DOMContentLoaded', function() {
-        const sidebarToggle = document.getElementById('sidebarToggle');
-        const sidebar = document.getElementById('sidebar');
-        const sidebarOverlay = document.getElementById('sidebarOverlay');
-        
-        if (!sidebarToggle || !sidebar || !sidebarOverlay) return;
-        
-        // Función para alternar el sidebar
-        function toggleSidebar() {
-          const isCollapsed = sidebar.classList.contains('collapsed');
-          
-          if (isCollapsed) {
-            // Expandir
-            sidebar.classList.remove('collapsed');
-            sidebarToggle.classList.add('active');
-            
-            // En móvil, mostrar overlay
-            if (window.innerWidth <= 768) {
-              sidebarOverlay.classList.add('active');
-            }
-          } else {
-            // Colapsar
-            sidebar.classList.add('collapsed');
-            sidebarToggle.classList.remove('active');
-            sidebarOverlay.classList.remove('active');
-          }
-        }
-        
-        // Event listeners
-        sidebarToggle.addEventListener('click', toggleSidebar);
-        
-        // Cerrar sidebar al hacer clic en el overlay (móvil)
-        sidebarOverlay.addEventListener('click', function() {
-          sidebar.classList.add('collapsed');
-          sidebarToggle.classList.remove('active');
-          sidebarOverlay.classList.remove('active');
-        });
-        
-        // Manejar cambios de tamaño de ventana
-        window.addEventListener('resize', function() {
-          if (window.innerWidth > 768) {
-            // En desktop, quitar overlay
-            sidebarOverlay.classList.remove('active');
-          } else if (!sidebar.classList.contains('collapsed')) {
-            // En móvil, mostrar overlay si sidebar está abierto
-            sidebarOverlay.classList.add('active');
-          }
-        });
-        
-        // Inicializar estado del sidebar en móvil
-        if (window.innerWidth <= 768) {
-          sidebar.classList.add('collapsed');
-        }
+        // Inicializar sidebar modular
+        initMawiSidebar('explorador');
       });
     </script>
   </body>

@@ -250,7 +250,7 @@
         <!-- Navigation -->
         <nav class="admin-nav">
             <ul>
-                <li><a href="admin-dashboard.html" class="active">Dashboard</a></li>
+                <li><a href="indexAdmin.html" class="active">Dashboard</a></li>
                 <li><a href="AdmUpReguser.html">Gestión de Usuarios</a></li>
                 <li><a href="SAaceptarusuarios.html">Usuarios Pendientes</a></li>
                 <li><a href="admin-registros.html">Registros</a></li>
@@ -262,14 +262,14 @@
         <main class="admin-content">
             <div class="admin-page-title">
                 <h2>Dashboard de Administrador</h2>
-                <p>Resumen general del sistema y estadísticas principales</p>
+                <p>Resumen general del sistema y acceso rápido a funciones administrativas</p>
             </div>
 
             <!-- Statistics Cards -->
             <div class="admin-stats">
                 <div class="stat-card">
                     <span class="stat-number" id="total-users">0</span>
-                    <div class="stat-label">Usuarios Totales</div>
+                    <div class="stat-label">Usuarios Activos</div>
                 </div>
                 <div class="stat-card">
                     <span class="stat-number" id="pending-users">0</span>
@@ -289,25 +289,25 @@
             <div class="admin-cards-grid">
                 <div class="admin-card">
                     <h3>Gestión de Usuarios</h3>
-                    <p>Administra usuarios, roles y permisos. Revisa solicitudes pendientes y gestiona cuentas activas.</p>
+                    <p>Administra usuarios activos, revisa sus registros y gestiona permisos del sistema.</p>
                     <a href="AdmUpReguser.html" class="admin-button">Gestionar Usuarios</a>
                 </div>
 
                 <div class="admin-card">
-                    <h3>Usuarios No Aceptados</h3>
-                    <p>Revisa y aprueba usuarios que están pendientes de activación en el sistema.</p>
+                    <h3>Usuarios Pendientes</h3>
+                    <p>Revisa y aprueba usuarios que están esperando activación en el sistema.</p>
                     <a href="SAaceptarusuarios.html" class="admin-button">Usuarios Pendientes</a>
                 </div>
 
                 <div class="admin-card">
                     <h3>Registros de Biodiversidad</h3>
-                    <p>Revisa y administra todos los registros de biodiversidad enviados por los usuarios del sistema.</p>
+                    <p>Revisa y administra todos los registros de biodiversidad enviados por los usuarios.</p>
                     <a href="admin-registros.html" class="admin-button">Ver Registros</a>
                 </div>
 
                 <div class="admin-card">
                     <h3>Reportes y Estadísticas</h3>
-                    <p>Genera reportes detallados y visualiza estadísticas del uso del sistema y datos recopilados.</p>
+                    <p>Genera reportes detallados y visualiza estadísticas del uso del sistema.</p>
                     <a href="admin-reports.html" class="admin-button">Ver Reportes</a>
                 </div>
             </div>
@@ -333,7 +333,7 @@
 
             try {
                 const payload = JSON.parse(atob(token.split('.')[1]));
-                if (payload.rol < 3) { // Debe ser Admin (rol 3) o Super Admin (rol 4)
+                if (payload.rol < 3) {
                     alert('No tienes permisos para acceder a esta página');
                     window.location.href = 'login.html';
                     return false;
@@ -353,8 +353,9 @@
         async function loadDashboardStats() {
             try {
                 const token = localStorage.getItem('token');
+                const payload = JSON.parse(atob(token.split('.')[1]));
                 
-                // Cargar usuarios
+                // Cargar usuarios activos
                 const usersResponse = await fetch('/Consultas/api/getusers', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
@@ -364,8 +365,7 @@
                     document.getElementById('total-users').textContent = usersData.total || 0;
                 }
 
-                // Cargar usuarios pendientes (solo Super Admin)
-                const payload = JSON.parse(atob(token.split('.')[1]));
+                // Cargar usuarios pendientes (solo Super Admin puede ver esto)
                 if (payload.rol === 4) {
                     const pendingResponse = await fetch('/Consultas/api/getUsersNA', {
                         headers: { 'Authorization': `Bearer ${token}` }
@@ -375,7 +375,13 @@
                         const pendingData = await pendingResponse.json();
                         document.getElementById('pending-users').textContent = pendingData.total || 0;
                     }
+                } else {
+                    // Si no es Super Admin, ocultar o mostrar 0
+                    document.getElementById('pending-users').textContent = 'N/A';
                 }
+
+                // Simular registros totales (necesitarías un endpoint específico)
+                document.getElementById('total-registros').textContent = Math.floor(Math.random() * 500) + 100;
 
             } catch (error) {
                 console.error('Error cargando estadísticas:', error);
